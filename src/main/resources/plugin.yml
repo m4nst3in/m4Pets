@@ -1,0 +1,21 @@
+name: m4Pets
+version: '1.0-SNAPSHOT'
+main: me.m4nst3in.m4plugins.M4Pets
+api-version: '1.21'
+depend: [DecentHolograms]
+author: m4nst3in
+description: Um plugin de pets completo para Minecraft
+
+commands:
+  pets:
+    description: Comando principal para gerenciar seus pets
+    usage: /pets
+    aliases: [pet]
+
+permissions:
+  m4pets.use:
+    description: Permite usar o comando /pets
+    default: true
+  m4pets.admin:
+    description: Permite usar comandos administrativos
+    default: op
