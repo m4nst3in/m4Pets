@@ -1,0 +1,271 @@
+# Configuração Principal do M4Pets
+# Desenvolvido por m4nst3in
+# Version: 1.0.0
+
+# Configurações gerais
+general:
+  # Prefixo usado nas mensagens do plugin
+  prefix: "&8[&bM4&9Pets&8] "
+  
+  # Intervalo de salvamento automático dos dados (em minutos)
+  save-interval: 5
+  
+  # Idioma das mensagens (atualmente apenas pt-BR)
+  language: "pt-BR"
+  
+  # Debug mode - mostra mensagens adicionais no console
+  debug: false
+
+# Configurações do banco de dados SQLite
+database:
+  filename: "m4pets.db"
+  hikari:
+    maximum-pool-size: 10
+    minimum-idle: 5
+    max-lifetime: 1800000
+    connection-timeout: 30000
+    
+# Configurações da economia
+economy:
+  # Custo de ressuscitar um pet (porcentagem do valor original)
+  resurrect-cost-percent: 25
+  
+# Configurações de hologramas
+holograms:
+  # Altura do holograma em relação ao pet
+  height: 1.5
+  # Atualização do holograma em ticks
+  update-interval: 20
+  # Formato do holograma
+  format:
+    - "&b%pet_name%"
+    - "&aHP: &f%pet_health%&7/&f%pet_max_health%"
+    - "&eNível: &f%pet_level%"
+
+# Configurações de GUI
+gui:
+  # Título da GUI principal
+  main-title: "&9&lM4Pets &8| &7Menu Principal"
+  
+  # Itens da GUI principal
+  main-items:
+    pet-store:
+      material: "CHEST"
+      name: "&e&lLoja de Pets"
+      lore:
+        - "&7Clique para abrir a loja de pets"
+        - "&7e adquirir novos companheiros!"
+      slot: 11
+    
+    my-pets:
+      material: "NAME_TAG"
+      name: "&a&lMeus Pets"
+      lore:
+        - "&7Gerencie seus pets, atribua nomes,"
+        - "&7melhore suas habilidades e mais!"
+      slot: 15
+    
+    info:
+      material: "BOOK"
+      name: "&b&lInformações"
+      lore:
+        - "&7Saiba como funcionam os pets"
+        - "&7e todas suas funcionalidades!"
+      slot: 22
+      
+  # Configurações da GUI da loja
+  store:
+    title: "&9&lM4Pets &8| &eLoja de Pets"
+    
+    # Categorias na loja
+    categories:
+      warrior:
+        enabled: true
+        material: "DIAMOND_SWORD"
+        name: "&c&lPets Guerreiros"
+        lore:
+          - "&7Pets que lutam ao seu lado"
+          - "&7e te protegem dos inimigos!"
+          - ""
+          - "&c&lEM DESENVOLVIMENTO"
+        slot: 10
+        implemented: false
+        
+      mount:
+        enabled: true
+        material: "SADDLE"
+        name: "&6&lPets Montaria"
+        lore:
+          - "&7Pets que você pode montar"
+          - "&7e se locomover pelo mundo!"
+        slot: 12
+        implemented: true
+        
+      worker:
+        enabled: true
+        material: "IRON_PICKAXE"
+        name: "&e&lPets Trabalhadores"
+        lore:
+          - "&7Pets que trabalham para você"
+          - "&7e te ajudam em diversas tarefas!"
+          - ""
+          - "&c&lEM DESENVOLVIMENTO"
+        slot: 14
+        implemented: false
+        
+      decorative:
+        enabled: true
+        material: "PAINTING"
+        name: "&d&lPets Decorativos"
+        lore:
+          - "&7Pets com visual único"
+          - "&7para decorar seu mundo!"
+          - ""
+          - "&c&lEM DESENVOLVIMENTO"
+        slot: 16
+        implemented: false
+
+# Configuração dos pets
+pets:
+  # Configurações globais para todos os pets
+  global:
+    # Tempo de spawn do pet (em segundos)
+    spawn-cooldown: 10
+    # Tempo máximo que um pet fica spawned (em minutos, 0 para infinito)
+    max-spawn-time: 0
+    # Distância máxima que o pet pode ficar do dono (em blocos)
+    max-distance: 30
+    # Desativar o pet quando o dono se desconecta
+    despawn-on-disconnect: true
+    # Desativar o pet quando o dono muda de mundo
+    despawn-on-world-change: false
+    # Nível máximo dos pets
+    max-level: 5
+    
+  # Configurações específicas para pets montaria
+  mount:
+    pig:
+      name: "Porco"
+      icon: "PIG_SPAWN_EGG"
+      cost: 1500
+      base-speed: 0.2
+      base-health: 20
+      speed-increase-per-level: 0.05
+      health-increase-per-level: 5
+      level5-ability: "Não sofre dano de queda quando montado"
+      variants:
+        - "default"
+        
+    horse:
+      name: "Cavalo"
+      icon: "HORSE_SPAWN_EGG"
+      cost: 3000
+      base-speed: 0.3
+      base-health: 30
+      speed-increase-per-level: 0.06
+      health-increase-per-level: 7
+      level5-ability: "Pulo aumentado (alto)"
+      variants:
+        - "WHITE"
+        - "CREAMY"
+        - "CHESTNUT"
+        - "BROWN"
+        - "BLACK"
+        - "GRAY"
+        - "DARK_BROWN"
+        
+    donkey:
+      name: "Burro"
+      icon: "DONKEY_SPAWN_EGG"
+      cost: 2000
+      base-speed: 0.25
+      base-health: 25
+      speed-increase-per-level: 0.04
+      health-increase-per-level: 6
+      level5-ability: "Pode armazenar itens quando montado"
+      variants:
+        - "default"
+        
+    sheep:
+      name: "Ovelha"
+      icon: "SHEEP_SPAWN_EGG"
+      cost: 1200
+      base-speed: 0.15
+      base-health: 15
+      speed-increase-per-level: 0.03
+      health-increase-per-level: 4
+      level5-ability: "Amortece quedas"
+      variants:
+        - "WHITE"
+        - "ORANGE"
+        - "MAGENTA"
+        - "LIGHT_BLUE"
+        - "YELLOW"
+        - "LIME"
+        - "PINK"
+        - "GRAY"
+        - "LIGHT_GRAY"
+        - "CYAN"
+        - "PURPLE"
+        - "BLUE"
+        - "BROWN"
+        - "GREEN"
+        - "RED"
+        - "BLACK"
+        
+    cow:
+      name: "Vaca"
+      icon: "COW_SPAWN_EGG"
+      cost: 1800
+      base-speed: 0.18
+      base-health: 22
+      speed-increase-per-level: 0.04
+      health-increase-per-level: 5
+      level5-ability: "Fornece leite a cada 5 minutos"
+      variants:
+        - "default"
+        
+    sniffer:
+      name: "Sniffer"
+      icon: "SNIFFER_SPAWN_EGG"
+      cost: 5000
+      base-speed: 0.15
+      base-health: 40
+      speed-increase-per-level: 0.03
+      health-increase-per-level: 8
+      level5-ability: "Encontra itens raros enquanto passeia"
+      variants:
+        - "default"
+
+# Configurações dos cosméticos
+cosmetics:
+  particles:
+    heart:
+      name: "Corações"
+      icon: "RED_DYE"
+      cost: 500
+      particle-type: "HEART"
+      
+    flame:
+      name: "Chamas"
+      icon: "BLAZE_POWDER"
+      cost: 800
+      particle-type: "FLAME"
+      
+    cloud:
+      name: "Nuvens"
+      icon: "WHITE_DYE"
+      cost: 600
+      particle-type: "CLOUD"
+      
+    note:
+      name: "Notas Musicais"
+      icon: "NOTE_BLOCK"
+      cost: 700
+      particle-type: "NOTE"
+      
+    portal:
+      name: "Portal"
+      icon: "ENDER_PEARL"
+      cost: 1200
+      particle-type: "PORTAL"
