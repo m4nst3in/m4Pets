@@ -141,14 +141,11 @@ public class M4Pets extends JavaPlugin {
                 }
             }, saveInterval, saveInterval);
         }
-        
-        // Task para atualizar hologramas
-        if (decentHologramsEnabled) {
-            int hologramUpdateInterval = configManager.getMainConfig().getInt("holograms.update-interval", 20);
-            getServer().getScheduler().runTaskTimer(this, () -> {
-                petManager.updateAllPetHolograms();
-            }, hologramUpdateInterval, hologramUpdateInterval);
-        }
+
+        int nameUpdateInterval = configManager.getMainConfig().getInt("pets.global.name-update-interval", 20);
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            petManager.updateAllPetDisplayNames();
+        }, nameUpdateInterval, nameUpdateInterval);
         
         // Task para verificar distância máxima dos pets
         int checkInterval = 100; // 5 segundos

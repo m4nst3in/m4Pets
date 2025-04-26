@@ -102,6 +102,9 @@ public class PetStoreGUI {
                 mainStoreInventory.setItem(i, filler);
             }
         }
+        
+        // ADICIONAR ESTA LINHA: Criar o inventário de montarias explicitamente
+        createCategoryInventory("mounts");
     }
     
     /**
@@ -112,7 +115,10 @@ public class PetStoreGUI {
         Inventory inventory = Bukkit.createInventory(null, 54, title);
         
         // Adicionar pets dessa categoria
-        ConfigurationSection petsConfig = plugin.getConfigManager().getMainConfig().getConfigurationSection("pets." + category);
+        // MODIFICAR ESTA LINHA PARA LIDAR COM "mounts" DE FORMA ESPECIAL
+        String configCategory = category.equals("mounts") ? "mount" : category;
+        ConfigurationSection petsConfig = plugin.getConfigManager().getMainConfig().getConfigurationSection("pets." + configCategory);
+        
         if (petsConfig != null) {
             int slot = 10;
             
@@ -135,7 +141,7 @@ public class PetStoreGUI {
                     lore.add(TextUtil.color("&7Preço: &e" + cost));
                     lore.add(TextUtil.color("&7Vida base: &c" + baseHealth));
                     
-                    if (category.equals("mount")) {
+                    if (configCategory.equals("mount")) {
                         lore.add(TextUtil.color("&7Velocidade base: &b" + baseSpeed));
                     }
                     
@@ -160,6 +166,9 @@ public class PetStoreGUI {
                 // Limitar a 28 pets por página
                 if (slot >= 45) break;
             }
+        } else {
+            // ADICIONAR MENSAGEM DE DEBUG
+            plugin.getLogger().warning("Não foi encontrada configuração para a categoria: pets." + configCategory);
         }
         
         // Adicionar item de voltar
@@ -202,6 +211,17 @@ public class PetStoreGUI {
         Inventory inventory = categoryInventories.get(category);
         if (inventory != null) {
             player.openInventory(inventory);
+        } else {
+            // ADICIONAR MENSAGEM DE DEBUG
+            plugin.getLogger().warning("Tentativa de abrir categoria não existente: " + category);
+            // Tentar criar a categoria se ainda não existe
+            createCategoryInventory(category);
+            inventory = categoryInventories.get(category);
+            if (inventory != null) {
+                player.openInventory(inventory);
+            } else {
+                player.sendMessage(plugin.formatMessage("&cEsta categoria de pets não está disponível no momento."));
+            }
         }
     }
     
@@ -209,8 +229,10 @@ public class PetStoreGUI {
      * Processa a compra de um pet
      */
     public void processPetPurchase(Player player, String category, String petKey) {
+        // MODIFICAR ESTA LINHA PARA LIDAR COM "mounts" DE FORMA ESPECIAL
+        String configCategory = category.equals("mounts") ? "mount" : category;
         ConfigurationSection petConfig = plugin.getConfigManager().getMainConfig()
-                .getConfigurationSection("pets." + category + "." + petKey);
+                .getConfigurationSection("pets." + configCategory + "." + petKey);
         
         if (petConfig == null) {
             player.sendMessage(plugin.formatMessage("&cEste pet não está disponível para compra."));

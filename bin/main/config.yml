@@ -130,7 +130,10 @@ pets:
   # Configurações globais para todos os pets
   global:
     # Tempo de spawn do pet (em segundos)
-    spawn-cooldown: 10
+    spawn-cooldown: 30
+    name-update-interval: 10  # Intervalo em ticks para atualizar os nomes das entidades (10 = 0.5 segundos)
+    show-health-bar: true     # Mostrar a barra de vida no nome do pet
+    show-level: true          # Mostrar o nível no nome do pet
     # Tempo máximo que um pet fica spawned (em minutos, 0 para infinito)
     max-spawn-time: 0
     # Distância máxima que o pet pode ficar do dono (em blocos)
@@ -138,24 +141,12 @@ pets:
     # Desativar o pet quando o dono se desconecta
     despawn-on-disconnect: true
     # Desativar o pet quando o dono muda de mundo
-    despawn-on-world-change: false
+    despawn-on-world-change: true
     # Nível máximo dos pets
     max-level: 5
     
   # Configurações específicas para pets montaria
   mount:
-    pig:
-      name: "Porco"
-      icon: "PIG_SPAWN_EGG"
-      cost: 1500
-      base-speed: 0.2
-      base-health: 20
-      speed-increase-per-level: 0.05
-      health-increase-per-level: 5
-      level5-ability: "Não sofre dano de queda quando montado"
-      variants:
-        - "default"
-        
     horse:
       name: "Cavalo"
       icon: "HORSE_SPAWN_EGG"
@@ -186,54 +177,15 @@ pets:
       variants:
         - "default"
         
-    sheep:
-      name: "Ovelha"
-      icon: "SHEEP_SPAWN_EGG"
-      cost: 1200
-      base-speed: 0.15
-      base-health: 15
-      speed-increase-per-level: 0.03
-      health-increase-per-level: 4
-      level5-ability: "Amortece quedas"
-      variants:
-        - "WHITE"
-        - "ORANGE"
-        - "MAGENTA"
-        - "LIGHT_BLUE"
-        - "YELLOW"
-        - "LIME"
-        - "PINK"
-        - "GRAY"
-        - "LIGHT_GRAY"
-        - "CYAN"
-        - "PURPLE"
-        - "BLUE"
-        - "BROWN"
-        - "GREEN"
-        - "RED"
-        - "BLACK"
-        
-    cow:
-      name: "Vaca"
-      icon: "COW_SPAWN_EGG"
-      cost: 1800
-      base-speed: 0.18
-      base-health: 22
-      speed-increase-per-level: 0.04
-      health-increase-per-level: 5
-      level5-ability: "Fornece leite a cada 5 minutos"
-      variants:
-        - "default"
-        
-    sniffer:
-      name: "Sniffer"
-      icon: "SNIFFER_SPAWN_EGG"
-      cost: 5000
-      base-speed: 0.15
-      base-health: 40
-      speed-increase-per-level: 0.03
-      health-increase-per-level: 8
-      level5-ability: "Encontra itens raros enquanto passeia"
+    mule:
+      name: "Égua"
+      icon: "MULE_SPAWN_EGG"
+      cost: 2500
+      base-speed: 0.28
+      base-health: 28
+      speed-increase-per-level: 0.05
+      health-increase-per-level: 6
+      level5-ability: "Pode carregar mais itens quando montada"
       variants:
         - "default"
 

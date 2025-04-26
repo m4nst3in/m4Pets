@@ -6,12 +6,14 @@ import me.m4nst3in.m4plugins.pets.abstractpets.MountPet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 import java.util.UUID;
 
@@ -140,8 +142,61 @@ public class PetListener implements Listener {
                     // Se for um pet de montaria, tentar montar
                     if (pet instanceof MountPet) {
                         event.setCancelled(true);
-                        ((MountPet) pet).mount(player);
+                        MountPet mountPet = (MountPet) pet;
+                        
+                        if (mountPet.isMounted() && entity.getPassengers().contains(player)) {
+                            // Se já estiver montado, desmontar
+                            mountPet.dismount(player);
+                            player.sendMessage(plugin.formatMessage("&eVocê desmontou do seu pet."));
+                        } else {
+                            // Tentar montar
+                            boolean mounted = mountPet.mount(player);
+                            if (mounted) {
+                                player.sendMessage(plugin.formatMessage("&aVocê montou no seu pet."));
+                            } else {
+                                player.sendMessage(plugin.formatMessage("&cNão foi possível montar no seu pet."));
+                            }
+                        }
                     }
+                } else {
+                    player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.not-owner")));
+                    event.setCancelled(true);
+                }
+                
+                return;
+            }
+        }
+    }
+    
+    /**
+     * Registrar estado de montaria quando um jogador monta em um pet
+     * IMPORTANTE: Este listener APENAS registra o estado, não tenta montar novamente para evitar loops
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onVehicleEnter(VehicleEnterEvent event) {
+        if (!(event.getEntered() instanceof Player)) {
+            return;
+        }
+        
+        Player player = (Player) event.getEntered();
+        Entity vehicle = event.getVehicle();
+        
+        // Verificar se a entidade sendo montada é um pet
+        for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {
+            if (pet.getEntity() != null && pet.getEntity().equals(vehicle)) {
+                // Verificar se o jogador é o dono do pet
+                if (!player.getUniqueId().equals(pet.getOwnerId())) {
+                    event.setCancelled(true);
+                    player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.not-owner")));
+                    return;
+                }
+                
+                // Se for uma montaria, apenas atualizar o status interno
+                // NÃO CHAMAR mount() aqui para evitar loop infinito
+                if (pet instanceof MountPet) {
+                    MountPet mountPet = (MountPet) pet;
+                    // Atualizar apenas variáveis internas
+                    mountPet.registerMountedState(player);
                 }
                 
                 return;

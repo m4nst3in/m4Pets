@@ -181,12 +181,10 @@ public class PetManager {
     /**
      * Atualiza os hologramas de todos os pets ativos
      */
-    public void updateAllPetHolograms() {
-        if (!plugin.isDecentHologramsEnabled()) return;
-        
+    public void updateAllPetDisplayNames() {
         for (AbstractPet pet : activePets.values()) {
             if (pet.isSpawned() && pet.getEntity() != null && !pet.getEntity().isDead()) {
-                pet.updateHologram();
+                pet.updateEntityName();
             }
         }
     }
@@ -219,18 +217,13 @@ public class PetManager {
      */
     private AbstractPet createNewPet(UUID ownerId, String name, PetType type, String variant) {
         switch (type) {
-            case PIG:
-                return new PigPet(plugin, ownerId, name, variant);
             case HORSE:
                 return new HorsePet(plugin, ownerId, name, variant);
             case DONKEY:
                 return new DonkeyPet(plugin, ownerId, name, variant);
-            case SHEEP:
-                return new SheepPet(plugin, ownerId, name, variant);
-            case COW:
-                return new CowPet(plugin, ownerId, name, variant);
-            case SNIFFER:
-                return new SnifferPet(plugin, ownerId, name, variant);
+            case MARE:
+                return new MarePet(plugin, ownerId, name, variant);
+            
             // Outros tipos serão implementados no futuro
             default:
                 return null;

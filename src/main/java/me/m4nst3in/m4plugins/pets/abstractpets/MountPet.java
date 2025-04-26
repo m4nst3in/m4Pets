@@ -2,13 +2,11 @@ package me.m4nst3in.m4plugins.pets.abstractpets;
 
 import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.PetType;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import eu.decentsoftware.holograms.api.DHAPI;
 
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +15,7 @@ public abstract class MountPet extends AbstractPet {
     
     protected double speed;
     protected boolean isMounted;
+    protected UUID riderId;
     
     public MountPet(M4Pets plugin, UUID ownerId, String petName, PetType type, String variant) {
         super(plugin, ownerId, petName, type, variant);
@@ -30,6 +29,7 @@ public abstract class MountPet extends AbstractPet {
         }
         
         this.isMounted = false;
+        this.riderId = null;
     }
     
     @Override
@@ -63,26 +63,47 @@ public abstract class MountPet extends AbstractPet {
     public boolean mount(Player player) {
         if (!spawned || entity == null || entity.isDead() || dead) return false;
         
-        // Tentar montar o pet
-        entity.addPassenger(player);
-        
-        // Verificar se montou com sucesso
-        if (entity.getPassengers().contains(player)) {
-            isMounted = true;
-            
-            // Esconder o holograma temporariamente
-            if (hologram != null && plugin.isDecentHologramsEnabled()) {
-                // Em vez de usar setVisible, vamos remover e recriar depois
-                DHAPI.removeHologram(hologram.getName());
-                hologram = null;
-            }
-            
-            // Iniciar monitoramento de montaria
-            startMountMonitoring(player);
-            return true;
+        // Verificar se já está montado
+        if (isMounted) {
+            player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.pet-already-mounted")));
+            return false;
         }
         
-        return false;
+        // Verificar se é o dono
+        if (!player.getUniqueId().equals(ownerId)) {
+            player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.not-owner")));
+            return false;
+        }
+        
+        // Tentar montar o pet
+        if (!entity.getPassengers().contains(player)) {
+            entity.addPassenger(player);
+        }
+        
+        // O VehicleEnterEvent será disparado e o listener atualizará o estado
+        // através da chamada ao registerMountedState
+        
+        return true;
+    }
+    
+    /**
+     * Registra o estado de montaria sem tentar montar novamente
+     * Este método deve ser chamado APENAS pelo listener de VehicleEnterEvent
+     * @param player Jogador que montou o pet
+     */
+    public void registerMountedState(Player player) {
+        if (player.getUniqueId().equals(ownerId) && entity != null && entity.getPassengers().contains(player)) {
+            this.isMounted = true;
+            this.riderId = player.getUniqueId();
+            
+            // Importante: Não desativar a IA, apenas configurar para ser controlável
+            if (entity instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) entity;
+                ensureMountable(); // Garantir que a entidade seja controlável
+            }
+            
+            startMountMonitoring(player);
+        }
     }
     
     /**
@@ -94,11 +115,7 @@ public abstract class MountPet extends AbstractPet {
         
         entity.removePassenger(player);
         isMounted = false;
-        
-        // Mostrar o holograma novamente
-        if (plugin.isDecentHologramsEnabled() && hologram == null) {
-            createHologram();
-        }
+        riderId = null;
     }
     
     /**
@@ -112,6 +129,7 @@ public abstract class MountPet extends AbstractPet {
                 // Verificar se o pet ainda existe e está spawned
                 if (entity == null || entity.isDead() || !spawned) {
                     isMounted = false;
+                    riderId = null;
                     cancel();
                     return;
                 }
@@ -119,12 +137,7 @@ public abstract class MountPet extends AbstractPet {
                 // Verificar se o jogador ainda está montado
                 if (!entity.getPassengers().contains(player)) {
                     isMounted = false;
-                    
-                    // Recriar o holograma novamente
-                    if (plugin.isDecentHologramsEnabled() && hologram == null) {
-                        createHologram();
-                    }
-                    
+                    riderId = null;
                     cancel();
                     return;
                 }
@@ -150,9 +163,40 @@ public abstract class MountPet extends AbstractPet {
         if (spawned && entity != null && !entity.getPassengers().isEmpty()) {
             entity.getPassengers().forEach(entity::removePassenger);
             isMounted = false;
+            riderId = null;
         }
         
         super.despawn();
+    }
+    
+    /**
+     * Garante que o pet seja domável e tenha sela se necessário
+     */
+    protected void ensureMountable() {
+        // Configuração básica para entidades montáveis
+        if (entity instanceof org.bukkit.entity.Horse) {
+            org.bukkit.entity.Horse horse = (org.bukkit.entity.Horse) entity;
+            horse.setTamed(true);
+            horse.setOwner(plugin.getServer().getPlayer(ownerId));
+        } else if (entity instanceof org.bukkit.entity.Pig) {
+            org.bukkit.entity.Pig pig = (org.bukkit.entity.Pig) entity;
+            pig.setSaddle(true);
+        } else if (entity instanceof org.bukkit.entity.Strider) {
+            org.bukkit.entity.Strider strider = (org.bukkit.entity.Strider) entity;
+            strider.setSaddle(true);
+        } else if (entity instanceof org.bukkit.entity.Cow) {
+            org.bukkit.entity.Cow cow = (org.bukkit.entity.Cow) entity;
+            cow.setAdult();
+        } else if (entity instanceof org.bukkit.entity.Sniffer) {
+            org.bukkit.entity.Sniffer sniffer = (org.bukkit.entity.Sniffer) entity;
+            sniffer.setAdult();
+        }
+        
+        // Desativar IA para permitir controle total pelo jogador
+        if (entity instanceof org.bukkit.entity.LivingEntity) {
+            org.bukkit.entity.LivingEntity livingEntity = (org.bukkit.entity.LivingEntity) entity;
+            livingEntity.setAI(false);
+        }
     }
     
     // Getters específicos
@@ -163,6 +207,10 @@ public abstract class MountPet extends AbstractPet {
     
     public boolean isMounted() {
         return isMounted;
+    }
+    
+    public UUID getRiderId() {
+        return riderId;
     }
     
     @Override

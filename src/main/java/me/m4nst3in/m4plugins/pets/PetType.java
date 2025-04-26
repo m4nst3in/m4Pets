@@ -7,10 +7,13 @@ public enum PetType {
     DONKEY("mount"),
     SHEEP("mount"),
     COW("mount"),
-    SNIFFER("mount"),
+    
     
     // Guerreiros (em desenvolvimento)
     WOLF("warriors"),
+    
+    // Novos pets montáveis
+    MARE("mount"),
     IRON_GOLEM("warriors"),
     SKELETON("warriors"),
     ZOMBIE("warriors"),

@@ -4,6 +4,7 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.PetType;
+import me.m4nst3in.m4plugins.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,7 +39,7 @@ public abstract class AbstractPet {
     protected boolean spawned; // Se o pet está invocado
     protected long lastSpawnTime; // Último momento em que foi invocado
     protected String cosmeticParticle; // Partícula cosmética ativa
-    protected Hologram hologram; // Holograma acima do pet
+    // Removido: protected Hologram hologram; // Holograma acima do pet
     
     public AbstractPet(M4Pets plugin, UUID ownerId, String petName, PetType type, String variant) {
         this.plugin = plugin;
@@ -96,13 +97,13 @@ public abstract class AbstractPet {
             spawned = true;
             lastSpawnTime = currentTime;
             
-            // Customizar entidade
+            // Customizar entidade com nome personalizado incluindo vida
             customizeEntity();
             
-            // Criar holograma se o DecentHolograms estiver disponível
-            if (plugin.isDecentHologramsEnabled()) {
-                createHologram();
-            }
+            // Não mais cria hologramas separados
+            // Removido: if (plugin.isDecentHologramsEnabled()) {
+            //     createHologram();
+            // }
             
             player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.pet-spawned")
                     .replace("%pet_name%", petName)));
@@ -117,11 +118,11 @@ public abstract class AbstractPet {
      */
     public void despawn() {
         if (spawned && entity != null && !entity.isDead()) {
-            // Remover holograma
-            if (hologram != null && plugin.isDecentHologramsEnabled()) {
-                DHAPI.removeHologram(hologram.getName());
-                hologram = null;
-            }
+            // Não mais precisa remover hologramas
+            // Removido: if (hologram != null && plugin.isDecentHologramsEnabled()) {
+            //     DHAPI.removeHologram(hologram.getName());
+            //     hologram = null;
+            // }
             
             // Remover entidade
             entity.remove();
@@ -131,60 +132,47 @@ public abstract class AbstractPet {
     }
     
     /**
-     * Cria o holograma acima do pet
+     * Gerar o nome completo do pet com informações de saúde e nível
+     * @return Nome formatado do pet
      */
-    protected void createHologram() {
-        if (!plugin.isDecentHologramsEnabled() || entity == null) return;
+    protected String getFormattedPetName() {
+        // Verificar se devemos mostrar a barra de vida
+        boolean showHealthBar = plugin.getConfigManager().getMainConfig().getBoolean("pets.global.show-health-bar", true);
+        boolean showLevel = plugin.getConfigManager().getMainConfig().getBoolean("pets.global.show-level", true);
         
-        // Remover holograma existente
-        if (hologram != null) {
-            DHAPI.removeHologram(hologram.getName());
+        StringBuilder nameBuilder = new StringBuilder();
+        
+        // Adicionar prefixo de nível se configurado
+        if (showLevel) {
+            nameBuilder.append("&8[&e").append(level).append("&8] ");
         }
         
-        // Obter formato do holograma da configuração
-        List<String> format = plugin.getConfigManager().getMainConfig().getStringList("holograms.format");
-        List<String> lines = new ArrayList<>();
+        // Adicionar nome do pet
+        nameBuilder.append("&a").append(petName);
         
-        // Processar linhas do holograma
-        for (String line : format) {
-            lines.add(line.replace("%pet_name%", petName)
-                    .replace("%pet_health%", String.valueOf((int) health))
-                    .replace("%pet_max_health%", String.valueOf((int) maxHealth))
-                    .replace("%pet_level%", String.valueOf(level)));
+        // Adicionar barra de vida se configurado
+        if (showHealthBar) {
+            nameBuilder.append(" &8(&c");
+            nameBuilder.append((int) health).append("&8/&c").append((int) maxHealth);
+            nameBuilder.append("&8)");
         }
         
-        // Calcular posição do holograma
-        double height = plugin.getConfigManager().getMainConfig().getDouble("holograms.height", 1.5);
-        Location loc = entity.getLocation().clone().add(0, entity.getHeight() + height, 0);
-        
-        // Criar holograma
-        hologram = DHAPI.createHologram("pet_" + petId.toString(), loc, lines);
+        return TextUtil.color(nameBuilder.toString());
     }
     
     /**
-     * Atualiza o holograma com as informações atuais
+     * Atualiza o nome visível da entidade
      */
-    public void updateHologram() {
-        if (!plugin.isDecentHologramsEnabled() || entity == null || hologram == null) return;
-        
-        // Atualizar posição
-        double height = plugin.getConfigManager().getMainConfig().getDouble("holograms.height", 1.5);
-        Location loc = entity.getLocation().clone().add(0, entity.getHeight() + height, 0);
-        DHAPI.moveHologram(hologram.getName(), loc);
-        
-        // Atualizar linhas
-        List<String> format = plugin.getConfigManager().getMainConfig().getStringList("holograms.format");
-        List<String> lines = new ArrayList<>();
-        
-        for (String line : format) {
-            lines.add(line.replace("%pet_name%", petName)
-                    .replace("%pet_health%", String.valueOf((int) health))
-                    .replace("%pet_max_health%", String.valueOf((int) maxHealth))
-                    .replace("%pet_level%", String.valueOf(level)));
+    public void updateEntityName() {
+        if (spawned && entity != null && !entity.isDead()) {
+            entity.setCustomName(getFormattedPetName());
+            entity.setCustomNameVisible(true);
         }
-        
-        DHAPI.setHologramLines(hologram, lines);
     }
+    
+    // Métodos removidos relacionados ao holograma
+    // Removido: createHologram()
+    // Removido: updateHologram()
     
     /**
      * Melhora o nível do pet
@@ -222,9 +210,9 @@ public abstract class AbstractPet {
         // Atualizar atributos baseados no nível
         updateAttributes();
         
-        // Atualizar holograma se estiver spawned
-        if (spawned && hologram != null) {
-            updateHologram();
+        // Atualizar nome da entidade em vez do holograma
+        if (spawned && entity != null) {
+            updateEntityName();
         }
         
         player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.upgrade-success")
@@ -281,9 +269,9 @@ public abstract class AbstractPet {
         
         health -= damage;
         
-        // Atualizar holograma se estiver spawned
-        if (spawned && hologram != null) {
-            updateHologram();
+        // Atualizar nome da entidade em vez do holograma
+        if (spawned && entity != null) {
+            updateEntityName();
         }
         
         if (health <= 0) {
@@ -303,14 +291,9 @@ public abstract class AbstractPet {
     public void rename(String newName) {
         this.petName = newName;
         
-        // Atualizar nome da entidade se estiver spawned
+        // Atualizar nome da entidade
         if (spawned && entity != null) {
-            customizeEntity();
-        }
-        
-        // Atualizar holograma se estiver spawned
-        if (spawned && hologram != null) {
-            updateHologram();
+            updateEntityName();
         }
     }
     
@@ -345,6 +328,11 @@ public abstract class AbstractPet {
             this.health = healthRatio * this.maxHealth;
         } else {
             this.health = this.maxHealth;
+        }
+        
+        // Atualizar nome da entidade
+        if (spawned && entity != null) {
+            updateEntityName();
         }
     }
     
@@ -386,6 +374,7 @@ public abstract class AbstractPet {
     
     /**
      * Personaliza a entidade (nome, atributos, etc.)
+     * NOTA: As subclasses devem chamar updateEntityName() em vez de definir o CustomName diretamente
      */
     protected abstract void customizeEntity();
     
