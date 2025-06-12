@@ -148,6 +148,20 @@ public abstract class WarriorPet extends AbstractPet {
             }
             
             scanForTargets();
+            
+            // Verificação extra de segurança - cancelar se tentando atacar o dono
+            if (entity instanceof org.bukkit.entity.Mob) {
+                org.bukkit.entity.Mob mob = (org.bukkit.entity.Mob) entity;
+                org.bukkit.entity.LivingEntity target = mob.getTarget();
+                if (target instanceof Player) {
+                    Player owner = Bukkit.getPlayer(ownerId);
+                    if (owner != null && target.getUniqueId().equals(owner.getUniqueId())) {
+                        mob.setTarget(null);
+                        currentTarget = null;
+                        plugin.getLogger().warning("SEGURANÇA: Cancelando target do pet " + petName + " para seu dono");
+                    }
+                }
+            }
         }, 0L, 20L); // A cada segundo
         
         // Task para atacar
@@ -260,11 +274,22 @@ public abstract class WarriorPet extends AbstractPet {
             return;
         }
         
-        // Verificação de segurança adicional: nunca atacar o dono
+        // VERIFICAÇÃO CRÍTICA: nunca atacar o dono
         Player owner = Bukkit.getPlayer(ownerId);
-        if (owner != null && currentTarget.equals(owner)) {
-            currentTarget = null;
-            return;
+        if (owner != null) {
+            // Múltiplas verificações para garantir que não ataque o dono
+            if (currentTarget.equals(owner) || 
+                currentTarget.getUniqueId().equals(owner.getUniqueId()) ||
+                (currentTarget instanceof Player && ((Player) currentTarget).getName().equalsIgnoreCase(owner.getName()))) {
+                
+                // Se tentou atacar o dono, cancelar completamente
+                currentTarget = null;
+                if (entity instanceof org.bukkit.entity.Mob) {
+                    ((org.bukkit.entity.Mob) entity).setTarget(null);
+                }
+                plugin.getLogger().warning("CRÍTICO: Pet " + petName + " cancelou ataque ao dono " + owner.getName());
+                return;
+            }
         }
         
         LivingEntity livingEntity = (LivingEntity) entity;

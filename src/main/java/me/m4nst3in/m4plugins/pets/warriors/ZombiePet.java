@@ -75,6 +75,18 @@ public class ZombiePet extends WarriorPet {
             
             // Definir como não agressivo por padrão (controlado pela IA)
             zombie.setTarget(null);
+            
+            // Configurações adicionais de segurança para evitar comportamento hostil
+            zombie.setRemoveWhenFarAway(false);
+            zombie.setPersistent(true);
+            
+            // Garantir que não ataque o dono configurando como não hostil
+            Player owner = Bukkit.getPlayer(ownerId);
+            if (owner != null) {
+                // Remover o dono da lista de alvos possíveis
+                zombie.setAI(false); // Temporariamente desabilitar IA padrão
+                zombie.setAI(true);  // Reabilitar IA personalizada
+            }
         }
     }
     
@@ -87,10 +99,19 @@ public class ZombiePet extends WarriorPet {
         // Verificar se o alvo é válido e não é um pet
         if (target.isDead() || target.equals(zombie)) return;
         
-        // Verificação de segurança adicional: nunca atacar o dono
+        // VERIFICAÇÃO CRÍTICA: nunca atacar o dono
         Player owner = Bukkit.getPlayer(ownerId);
-        if (owner != null && target.equals(owner)) {
-            return;
+        if (owner != null) {
+            // Múltiplas verificações para garantir que não ataque o dono
+            if (target.equals(owner) || 
+                target.getUniqueId().equals(owner.getUniqueId()) ||
+                (target instanceof Player && ((Player) target).getName().equalsIgnoreCase(owner.getName()))) {
+                
+                // Se tentou atacar o dono, cancelar completamente
+                zombie.setTarget(null);
+                currentTarget = null;
+                return;
+            }
         }
         
         // Verificar se o alvo não é outro pet

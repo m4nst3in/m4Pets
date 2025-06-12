@@ -3,13 +3,16 @@ package me.m4nst3in.m4plugins.listeners;
 import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.abstractpets.AbstractPet;
 import me.m4nst3in.m4plugins.pets.abstractpets.MountPet;
+import me.m4nst3in.m4plugins.pets.abstractpets.WarriorPet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -200,6 +203,86 @@ public class PetListener implements Listener {
                 }
                 
                 return;
+            }
+        }
+    }
+    
+    /**
+     * Prevenir que pets ataquem seus donos
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        Entity victim = event.getEntity();
+        
+        // Verificar se o causador do dano é um pet atacando seu dono
+        for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {
+            if (pet.getEntity() != null && pet.getEntity().equals(damager)) {
+                // Verificar se a vítima é o dono do pet
+                if (victim instanceof Player) {
+                    Player player = (Player) victim;
+                    if (pet.getOwnerId().equals(player.getUniqueId())) {
+                        // CANCELAR DANO IMEDIATAMENTE
+                        event.setCancelled(true);
+                        
+                        // Limpar o alvo do pet se for um warrior pet
+                        if (pet instanceof WarriorPet) {
+                            WarriorPet warriorPet = (WarriorPet) pet;
+                            warriorPet.setTargetPlayer(null);
+                            if (pet.getEntity() instanceof org.bukkit.entity.Mob) {
+                                ((org.bukkit.entity.Mob) pet.getEntity()).setTarget(null);
+                            }
+                        }
+                        
+                        plugin.getLogger().warning("BLOQUEADO: Pet " + pet.getPetName() + " tentou atacar seu dono " + player.getName());
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // Verificar se um jogador está atacando um pet (lógica original)
+        if (damager instanceof Player) {
+            Player player = (Player) damager;
+            
+            // Verificar se o pet é do jogador
+            for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {
+                if (pet.getOwnerId().equals(player.getUniqueId()) && pet.getEntity() != null && pet.getEntity().equals(victim)) {
+                    // Cancelar dano
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Prevenir que pets tenham seus alvos definidos como seus donos
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityTarget(EntityTargetEvent event) {
+        Entity target = event.getTarget();
+        Entity entity = event.getEntity();
+        
+        // Verificar se o alvo é um jogador
+        if (target instanceof Player) {
+            Player player = (Player) target;
+            
+            // Verificar se o pet pertence ao jogador
+            for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {
+                if (pet.getOwnerId().equals(player.getUniqueId()) && 
+                    pet.getEntity() != null && pet.getEntity().equals(entity)) {
+                    // CANCELAR O TARGETING IMEDIATAMENTE
+                    event.setCancelled(true);
+                    plugin.getLogger().warning("BLOQUEADO: Pet " + pet.getPetName() + " tentou targetar seu dono " + player.getName());
+                    
+                    // Se for um warrior pet, limpar o target também
+                    if (pet instanceof WarriorPet) {
+                        WarriorPet warriorPet = (WarriorPet) pet;
+                        warriorPet.setTargetPlayer(null);
+                    }
+                    return;
+                }
             }
         }
     }
