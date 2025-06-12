@@ -224,6 +224,14 @@ public class PetManager {
             case MARE:
                 return new MarePet(plugin, ownerId, name, variant);
             
+            // Pets Guerreiros
+            case ZOMBIE:
+                return new me.m4nst3in.m4plugins.pets.warriors.ZombiePet(plugin, ownerId, name, variant);
+            case SKELETON:
+                return new me.m4nst3in.m4plugins.pets.warriors.SkeletonPet(plugin, ownerId, name, variant);
+            case VINDICATOR:
+                return new me.m4nst3in.m4plugins.pets.warriors.VindicatorPet(plugin, ownerId, name, variant);
+            
             // Outros tipos serão implementados no futuro
             default:
                 return null;

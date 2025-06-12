@@ -86,10 +86,8 @@ gui:
         lore:
           - "&7Pets que lutam ao seu lado"
           - "&7e te protegem dos inimigos!"
-          - ""
-          - "&c&lEM DESENVOLVIMENTO"
         slot: 10
-        implemented: false
+        implemented: true
         
       mount:
         enabled: true
@@ -188,6 +186,49 @@ pets:
       level5-ability: "Pode carregar mais itens quando montada"
       variants:
         - "default"
+
+  # Configurações específicas para pets guerreiros
+  warriors:
+    zombie:
+      name: "Zumbi Guerreiro"
+      icon: "ZOMBIE_SPAWN_EGG"
+      cost: 4000
+      base-health: 40
+      base-damage: 8
+      health-increase-per-level: 10
+      damage-increase-per-level: 2
+      level5-ability: "Sede de Sangue - Regenera 2 corações por kill"
+      variants:
+        - "default"
+        - "husk"
+        - "drowned"
+        
+    skeleton:
+      name: "Esqueleto Guerreiro"
+      icon: "SKELETON_SPAWN_EGG"
+      cost: 4500
+      base-health: 35
+      base-damage: 10
+      health-increase-per-level: 8
+      damage-increase-per-level: 2.5
+      level5-ability: "Rajada Mortal (ranged) / Ataque Giratório (melee)"
+      variants:
+        - "default"
+        - "stray"
+        - "wither_skeleton"
+        
+    vindicator:
+      name: "Vindicador Guerreiro"
+      icon: "VINDICATOR_SPAWN_EGG"
+      cost: 5000
+      base-health: 50
+      base-damage: 12
+      health-increase-per-level: 12
+      damage-increase-per-level: 3
+      level5-ability: "Fúria Berserker - Dano e velocidade dobrados por 15s"
+      variants:
+        - "default"
+        - "pillager"
 
 # Configurações dos cosméticos
 cosmetics:

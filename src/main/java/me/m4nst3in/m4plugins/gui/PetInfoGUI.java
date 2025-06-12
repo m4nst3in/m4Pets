@@ -73,7 +73,6 @@ public class PetInfoGUI {
             List<String> lore = new ArrayList<>();
             lore.add(TextUtil.color("&6Montarias &7- Pets que você pode montar"));
             lore.add(TextUtil.color("&c&lGuerreiros &7- Pets que lutam por você"));
-            lore.add(TextUtil.color("&7(Em desenvolvimento)"));
             lore.add(TextUtil.color("&e&lTrabalhadores &7- Pets que trabalham para você"));
             lore.add(TextUtil.color("&7(Em desenvolvimento)"));
             lore.add(TextUtil.color("&d&lDecorativos &7- Pets puramente estéticos"));

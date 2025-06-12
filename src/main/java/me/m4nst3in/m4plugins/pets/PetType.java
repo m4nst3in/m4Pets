@@ -17,6 +17,7 @@ public enum PetType {
     IRON_GOLEM("warriors"),
     SKELETON("warriors"),
     ZOMBIE("warriors"),
+    VINDICATOR("warriors"),
     
     // Trabalhadores (em desenvolvimento)
     VILLAGER("workers"),

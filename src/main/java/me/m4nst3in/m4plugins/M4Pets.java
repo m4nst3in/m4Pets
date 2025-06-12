@@ -72,6 +72,8 @@ public class M4Pets extends JavaPlugin {
             // Registrando comandos
             getCommand("pets").setExecutor(new PetCommand(this));
             getCommand("pets").setTabCompleter(new PetCommand(this));
+            getCommand("warrior").setExecutor(new me.m4nst3in.m4plugins.commands.WarriorCommand(this));
+            getCommand("warrior").setTabCompleter(new me.m4nst3in.m4plugins.commands.WarriorCommand(this));
             
             // Registrando listeners
             getServer().getPluginManager().registerEvents(new GUIListener(this), this);

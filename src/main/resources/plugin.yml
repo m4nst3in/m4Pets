@@ -13,6 +13,10 @@ commands:
     description: Comando principal do plugin M4Pets
     usage: /pets
     aliases: [pet, m4pets]
+  warrior:
+    description: Comando para controlar pets guerreiros
+    usage: /warrior <subcmd> [args...]
+    aliases: [war, guerreiro]
     
 permissions:
   m4pets.use:
