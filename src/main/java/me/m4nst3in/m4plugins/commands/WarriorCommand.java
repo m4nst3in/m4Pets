@@ -126,27 +126,24 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
         try {
             EntityType entityType = EntityType.valueOf(targetName.toUpperCase());
             
-            // Encontrar mobs do tipo especificado na área
-            List<Entity> nearbyMobs = new ArrayList<>();
+            // Verificar se há mobs desse tipo na área
+            boolean foundMobs = false;
             for (Entity entity : player.getNearbyEntities(warriorPet.getAttackRadius(), 
                                                           warriorPet.getAttackRadius(), 
                                                           warriorPet.getAttackRadius())) {
                 if (entity.getType() == entityType && entity instanceof LivingEntity) {
-                    nearbyMobs.add(entity);
+                    foundMobs = true;
+                    break;
                 }
             }
             
-            if (nearbyMobs.isEmpty()) {
+            if (!foundMobs) {
                 player.sendMessage(plugin.formatMessage("&cNenhum " + targetName + " encontrado na área."));
                 return;
             }
             
-            // Definir o primeiro mob encontrado como alvo
-            Entity targetMob = nearbyMobs.get(0);
-            if (warriorPet.getEntity() instanceof Mob) {
-                ((Mob) warriorPet.getEntity()).setTarget((LivingEntity) targetMob);
-            }
-            
+            // Definir o tipo de mob como alvo
+            warriorPet.setTargetMobType(entityType);
             player.sendMessage(plugin.formatMessage("&a" + warriorPet.getPetName() + " &eagora atacará &c" + 
                 targetName.toLowerCase() + "s &ena área!"));
             
@@ -246,6 +243,8 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
         
         if (warriorPet.getTargetPlayerName() != null) {
             player.sendMessage(plugin.formatMessage("&eAlvo: &c" + warriorPet.getTargetPlayerName()));
+        } else if (warriorPet.getTargetMobType() != null) {
+            player.sendMessage(plugin.formatMessage("&eAlvo: &c" + warriorPet.getTargetMobType().name().toLowerCase() + "s"));
         }
         
         if (warriorPet instanceof SkeletonPet) {
@@ -281,6 +280,7 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
         }
         
         warriorPet.setTargetPlayer(null);
+        warriorPet.setTargetMobType(null);
         if (warriorPet.getEntity() instanceof Mob) {
             ((Mob) warriorPet.getEntity()).setTarget(null);
         }

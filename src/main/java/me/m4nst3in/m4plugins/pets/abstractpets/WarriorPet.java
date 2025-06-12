@@ -24,6 +24,7 @@ public abstract class WarriorPet extends AbstractPet {
     protected boolean aiEnabled;
     protected LivingEntity currentTarget;
     protected String targetPlayerName;
+    protected EntityType targetMobType;
     protected BukkitTask combatTask;
     protected BukkitTask targetScanTask;
     
@@ -47,6 +48,7 @@ public abstract class WarriorPet extends AbstractPet {
         this.aiEnabled = true;
         this.currentTarget = null;
         this.targetPlayerName = null;
+        this.targetMobType = null;
     }
     
     @Override
@@ -121,6 +123,7 @@ public abstract class WarriorPet extends AbstractPet {
      */
     public void setTargetPlayer(String targetName) {
         this.targetPlayerName = targetName;
+        this.targetMobType = null; // Limpar alvo de mob quando definir jogador
         
         // Se está tentando atacar o próprio dono, cancelar
         Player owner = Bukkit.getPlayer(ownerId);
@@ -130,6 +133,15 @@ public abstract class WarriorPet extends AbstractPet {
                 owner.sendMessage(plugin.formatMessage("&cSeu pet não pode atacar você mesmo!"));
             }
         }
+    }
+    
+    /**
+     * Define um tipo de mob como alvo do pet
+     * @param mobType Tipo de mob alvo (null para limpar)
+     */
+    public void setTargetMobType(EntityType mobType) {
+        this.targetMobType = mobType;
+        this.targetPlayerName = null; // Limpar alvo de jogador quando definir mob
     }
     
     /**
@@ -158,7 +170,6 @@ public abstract class WarriorPet extends AbstractPet {
                     if (owner != null && target.getUniqueId().equals(owner.getUniqueId())) {
                         mob.setTarget(null);
                         currentTarget = null;
-                        plugin.getLogger().warning("SEGURANÇA: Cancelando target do pet " + petName + " para seu dono");
                     }
                 }
             }
@@ -196,9 +207,7 @@ public abstract class WarriorPet extends AbstractPet {
     protected void scanForTargets() {
         if (!(entity instanceof LivingEntity)) return;
         
-        LivingEntity livingEntity = (LivingEntity) entity;
         Player owner = Bukkit.getPlayer(ownerId);
-        
         if (owner == null || !owner.isOnline()) return;
         
         // Primeiro, verificar se há um jogador alvo específico
@@ -212,7 +221,28 @@ public abstract class WarriorPet extends AbstractPet {
             }
         }
         
-        // Se não há alvo específico, defender o dono
+        // Se há um tipo de mob específico definido, buscar apenas esse tipo
+        if (targetMobType != null) {
+            LivingEntity closestMob = null;
+            double closestDistance = Double.MAX_VALUE;
+            
+            for (Entity nearbyEntity : owner.getNearbyEntities(attackRadius, attackRadius, attackRadius)) {
+                if (nearbyEntity.getType() == targetMobType && nearbyEntity instanceof LivingEntity) {
+                    LivingEntity mob = (LivingEntity) nearbyEntity;
+                    double distance = mob.getLocation().distance(entity.getLocation());
+                    
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestMob = mob;
+                    }
+                }
+            }
+            
+            currentTarget = closestMob;
+            return;
+        }
+        
+        // Se não há alvo específico, defender o dono contra hostis
         LivingEntity closestThreat = null;
         double closestDistance = Double.MAX_VALUE;
         
@@ -287,7 +317,6 @@ public abstract class WarriorPet extends AbstractPet {
                 if (entity instanceof org.bukkit.entity.Mob) {
                     ((org.bukkit.entity.Mob) entity).setTarget(null);
                 }
-                plugin.getLogger().warning("CRÍTICO: Pet " + petName + " cancelou ataque ao dono " + owner.getName());
                 return;
             }
         }
@@ -357,6 +386,10 @@ public abstract class WarriorPet extends AbstractPet {
         return targetPlayerName;
     }
     
+    public EntityType getTargetMobType() {
+        return targetMobType;
+    }
+    
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> data = super.serialize();
@@ -365,6 +398,9 @@ public abstract class WarriorPet extends AbstractPet {
         data.put("aiEnabled", aiEnabled);
         if (targetPlayerName != null) {
             data.put("targetPlayer", targetPlayerName);
+        }
+        if (targetMobType != null) {
+            data.put("targetMobType", targetMobType.name());
         }
         return data;
     }

@@ -233,8 +233,6 @@ public class PetListener implements Listener {
                                 ((org.bukkit.entity.Mob) pet.getEntity()).setTarget(null);
                             }
                         }
-                        
-                        plugin.getLogger().warning("BLOQUEADO: Pet " + pet.getPetName() + " tentou atacar seu dono " + player.getName());
                         return;
                     }
                 }
@@ -274,7 +272,6 @@ public class PetListener implements Listener {
                     pet.getEntity() != null && pet.getEntity().equals(entity)) {
                     // CANCELAR O TARGETING IMEDIATAMENTE
                     event.setCancelled(true);
-                    plugin.getLogger().warning("BLOQUEADO: Pet " + pet.getPetName() + " tentou targetar seu dono " + player.getName());
                     
                     // Se for um warrior pet, limpar o target também
                     if (pet instanceof WarriorPet) {
