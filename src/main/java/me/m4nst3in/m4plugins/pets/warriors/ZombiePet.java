@@ -4,6 +4,7 @@ import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.PetType;
 import me.m4nst3in.m4plugins.pets.abstractpets.AbstractPet;
 import me.m4nst3in.m4plugins.pets.abstractpets.WarriorPet;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -43,7 +44,10 @@ public class ZombiePet extends WarriorPet {
             zombie.setAdult();
             zombie.setCanBreakDoors(false);
             zombie.setCanPickupItems(false);
-            // zombie.setShouldBurnInDay(false); // Method not available in this version
+            
+            // Proteger contra fogo solar - equipar helmet invisível
+            zombie.getEquipment().setHelmet(new ItemStack(Material.LEATHER_HELMET));
+            zombie.getEquipment().setHelmetDropChance(0.0f);
             
             // Equipar com espada de ferro baseado na variante
             if ("armed".equals(variant)) {
@@ -82,6 +86,12 @@ public class ZombiePet extends WarriorPet {
         
         // Verificar se o alvo é válido e não é um pet
         if (target.isDead() || target.equals(zombie)) return;
+        
+        // Verificação de segurança adicional: nunca atacar o dono
+        Player owner = Bukkit.getPlayer(ownerId);
+        if (owner != null && target.equals(owner)) {
+            return;
+        }
         
         // Verificar se o alvo não é outro pet
         for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {

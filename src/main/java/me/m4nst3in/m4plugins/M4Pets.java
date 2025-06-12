@@ -157,6 +157,11 @@ public class M4Pets extends JavaPlugin {
                 petManager.checkPetsDistance(maxDistance);
             }
         }, checkInterval, checkInterval);
+        
+        // Task para proteger pets contra fogo solar
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            petManager.protectPetsFromSunlight();
+        }, 20L, 40L); // A cada 2 segundos
     }
     
     /**

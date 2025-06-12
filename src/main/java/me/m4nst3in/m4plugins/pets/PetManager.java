@@ -7,8 +7,12 @@ import me.m4nst3in.m4plugins.pets.abstractpets.MountPet;
 import me.m4nst3in.m4plugins.pets.mounts.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -406,6 +410,43 @@ public class PetManager {
                     double distance = pet.getEntity().getLocation().distance(owner.getLocation());
                     if (distance > maxDistance) {
                         pet.teleportToOwner();
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Protege os pets contra fogo solar
+     */
+    public void protectPetsFromSunlight() {
+        for (AbstractPet pet : activePets.values()) {
+            if (pet.isSpawned() && pet.getEntity() != null && !pet.getEntity().isDead()) {
+                // Verificar se é um pet que pode pegar fogo (Zombie ou Skeleton)
+                if (pet.getEntity().getType() == EntityType.ZOMBIE || 
+                    pet.getEntity().getType() == EntityType.SKELETON) {
+                    
+                    // Se estiver pegando fogo, apagar
+                    if (pet.getEntity().getFireTicks() > 0) {
+                        pet.getEntity().setFireTicks(0);
+                    }
+                    
+                    // Verificar se está no sol durante o dia
+                    org.bukkit.World world = pet.getEntity().getWorld();
+                    if (world.getTime() > 0 && world.getTime() < 13000) { // Dia
+                        Location loc = pet.getEntity().getLocation();
+                        if (world.getHighestBlockYAt(loc) <= loc.getBlockY()) { // Está no sol
+                            // Aplicar proteção adicional se não tiver helmet
+                            if (pet.getEntity() instanceof LivingEntity) {
+                                LivingEntity living = (LivingEntity) pet.getEntity();
+                                if (living.getEquipment() != null && 
+                                    (living.getEquipment().getHelmet() == null || 
+                                     living.getEquipment().getHelmet().getType() == Material.AIR)) {
+                                    living.getEquipment().setHelmet(new org.bukkit.inventory.ItemStack(Material.LEATHER_HELMET));
+                                    living.getEquipment().setHelmetDropChance(0.0f);
+                                }
+                            }
+                        }
                     }
                 }
             }

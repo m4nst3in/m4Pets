@@ -4,6 +4,7 @@ import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.PetType;
 import me.m4nst3in.m4plugins.pets.abstractpets.AbstractPet;
 import me.m4nst3in.m4plugins.pets.abstractpets.WarriorPet;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -83,6 +84,12 @@ public class VindicatorPet extends WarriorPet {
         
         // Verificar se o alvo é válido e não é um pet
         if (target.isDead() || target.equals(vindicator)) return;
+        
+        // Verificação de segurança adicional: nunca atacar o dono
+        Player owner = Bukkit.getPlayer(ownerId);
+        if (owner != null && target.equals(owner)) {
+            return;
+        }
         
         // Verificar se o alvo não é outro pet
         for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {

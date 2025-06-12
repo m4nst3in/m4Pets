@@ -222,6 +222,12 @@ public abstract class WarriorPet extends AbstractPet {
      * Verifica se uma entidade é hostil
      */
     protected boolean isHostileEntity(Entity entity) {
+        // Nunca atacar o próprio dono
+        Player owner = Bukkit.getPlayer(ownerId);
+        if (owner != null && entity.equals(owner)) {
+            return false;
+        }
+        
         // Verificar se é um pet (nunca atacar outros pets)
         for (AbstractPet pet : plugin.getPetManager().getAllActivePets()) {
             if (pet.getEntity() != null && pet.getEntity().equals(entity)) {
@@ -231,8 +237,12 @@ public abstract class WarriorPet extends AbstractPet {
         
         if (entity instanceof Player) {
             Player player = (Player) entity;
-            Player owner = Bukkit.getPlayer(ownerId);
-            return owner != null && !player.getUniqueId().equals(owner.getUniqueId());
+            // Nunca atacar o dono, mesmo que o UUID seja diferente por algum motivo
+            if (owner != null && (player.getUniqueId().equals(owner.getUniqueId()) || 
+                                  player.getName().equalsIgnoreCase(owner.getName()))) {
+                return false;
+            }
+            return true; // Outros jogadores podem ser atacados se definidos como alvo
         }
         
         return entity instanceof Monster || 
@@ -246,6 +256,13 @@ public abstract class WarriorPet extends AbstractPet {
      */
     protected void performCombatAction() {
         if (!(entity instanceof LivingEntity) || currentTarget == null || currentTarget.isDead()) {
+            currentTarget = null;
+            return;
+        }
+        
+        // Verificação de segurança adicional: nunca atacar o dono
+        Player owner = Bukkit.getPlayer(ownerId);
+        if (owner != null && currentTarget.equals(owner)) {
             currentTarget = null;
             return;
         }
