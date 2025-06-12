@@ -89,17 +89,16 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
      * Comando para definir alvo do pet guerreiro
      */
     private void handleTargetCommand(Player player, String[] args) {
-        if (args.length < 3) {
-            player.sendMessage(plugin.formatMessage("&cUso: /warrior target <nome_do_pet> <jogador|mob>"));
+        if (args.length < 2) {
+            player.sendMessage(plugin.formatMessage("&cUso: /warrior target <jogador|mob>"));
             return;
         }
         
-        String petName = args[1];
-        String targetName = args[2];
+        String targetName = args[1];
         
-        WarriorPet warriorPet = getPlayerWarriorPet(player, petName);
+        WarriorPet warriorPet = getActiveWarriorPet(player);
         if (warriorPet == null) {
-            player.sendMessage(plugin.formatMessage("&cPet guerreiro '" + petName + "' não encontrado ou não está ativo."));
+            player.sendMessage(plugin.formatMessage("&cVocê não tem nenhum pet guerreiro ativo."));
             return;
         }
         
@@ -119,7 +118,7 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
             }
             
             warriorPet.setTargetPlayer(targetPlayer.getName());
-            player.sendMessage(plugin.formatMessage("&a" + petName + " &eagora atacará &c" + targetPlayer.getName() + "&e!"));
+            player.sendMessage(plugin.formatMessage("&a" + warriorPet.getPetName() + " &eagora atacará &c" + targetPlayer.getName() + "&e!"));
             return;
         }
         
@@ -148,7 +147,7 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
                 ((Mob) warriorPet.getEntity()).setTarget((LivingEntity) targetMob);
             }
             
-            player.sendMessage(plugin.formatMessage("&a" + petName + " &eagora atacará &c" + 
+            player.sendMessage(plugin.formatMessage("&a" + warriorPet.getPetName() + " &eagora atacará &c" + 
                 targetName.toLowerCase() + "s &ena área!"));
             
         } catch (IllegalArgumentException e) {
@@ -160,17 +159,16 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
      * Comando para controlar IA do pet
      */
     private void handleAICommand(Player player, String[] args) {
-        if (args.length < 3) {
-            player.sendMessage(plugin.formatMessage("&cUso: /warrior ai <nome_do_pet> <on|off>"));
+        if (args.length < 2) {
+            player.sendMessage(plugin.formatMessage("&cUso: /warrior ai <on|off>"));
             return;
         }
         
-        String petName = args[1];
-        String aiState = args[2].toLowerCase();
+        String aiState = args[1].toLowerCase();
         
-        WarriorPet warriorPet = getPlayerWarriorPet(player, petName);
+        WarriorPet warriorPet = getActiveWarriorPet(player);
         if (warriorPet == null) {
-            player.sendMessage(plugin.formatMessage("&cPet guerreiro '" + petName + "' não encontrado ou não está ativo."));
+            player.sendMessage(plugin.formatMessage("&cVocê não tem nenhum pet guerreiro ativo."));
             return;
         }
         
@@ -178,23 +176,17 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
         warriorPet.setAIEnabled(enable);
         
         String status = enable ? "&aativada" : "&cdesativada";
-        player.sendMessage(plugin.formatMessage("&eIA do pet &a" + petName + " &efoi " + status + "&e!"));
+        player.sendMessage(plugin.formatMessage("&eIA do pet &a" + warriorPet.getPetName() + " &efoi " + status + "&e!"));
     }
     
     /**
      * Comando para alterar modo de combate (apenas esqueleto)
      */
     private void handleModeCommand(Player player, String[] args) {
-        if (args.length < 2) {
-            player.sendMessage(plugin.formatMessage("&cUso: /warrior mode <nome_do_pet>"));
-            return;
-        }
-        
-        String petName = args[1];
-        WarriorPet warriorPet = getPlayerWarriorPet(player, petName);
+        WarriorPet warriorPet = getActiveWarriorPet(player);
         
         if (warriorPet == null) {
-            player.sendMessage(plugin.formatMessage("&cPet guerreiro '" + petName + "' não encontrado ou não está ativo."));
+            player.sendMessage(plugin.formatMessage("&cVocê não tem nenhum pet guerreiro ativo."));
             return;
         }
         
@@ -211,16 +203,10 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
      * Comando para ativar habilidade especial
      */
     private void handleAbilityCommand(Player player, String[] args) {
-        if (args.length < 2) {
-            player.sendMessage(plugin.formatMessage("&cUso: /warrior ability <nome_do_pet>"));
-            return;
-        }
-        
-        String petName = args[1];
-        WarriorPet warriorPet = getPlayerWarriorPet(player, petName);
+        WarriorPet warriorPet = getActiveWarriorPet(player);
         
         if (warriorPet == null) {
-            player.sendMessage(plugin.formatMessage("&cPet guerreiro '" + petName + "' não encontrado ou não está ativo."));
+            player.sendMessage(plugin.formatMessage("&cVocê não tem nenhum pet guerreiro ativo."));
             return;
         }
         
@@ -237,27 +223,21 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
             warriorPet.useLevel5Ability();
         }
         
-        player.sendMessage(plugin.formatMessage("&a" + petName + " &eusou sua habilidade especial!"));
+        player.sendMessage(plugin.formatMessage("&a" + warriorPet.getPetName() + " &eusou sua habilidade especial!"));
     }
     
     /**
      * Comando para ver status do pet
      */
     private void handleStatusCommand(Player player, String[] args) {
-        if (args.length < 2) {
-            player.sendMessage(plugin.formatMessage("&cUso: /warrior status <nome_do_pet>"));
-            return;
-        }
-        
-        String petName = args[1];
-        WarriorPet warriorPet = getPlayerWarriorPet(player, petName);
+        WarriorPet warriorPet = getActiveWarriorPet(player);
         
         if (warriorPet == null) {
-            player.sendMessage(plugin.formatMessage("&cPet guerreiro '" + petName + "' não encontrado ou não está ativo."));
+            player.sendMessage(plugin.formatMessage("&cVocê não tem nenhum pet guerreiro ativo."));
             return;
         }
         
-        player.sendMessage(plugin.formatMessage("&9&l=== &bStatus de " + petName + " &9&l==="));
+        player.sendMessage(plugin.formatMessage("&9&l=== &bStatus de " + warriorPet.getPetName() + " &9&l==="));
         player.sendMessage(plugin.formatMessage("&eNível: &f" + warriorPet.getLevel()));
         player.sendMessage(plugin.formatMessage("&eVida: &c" + (int)warriorPet.getHealth() + "&f/&c" + (int)warriorPet.getMaxHealth()));
         player.sendMessage(plugin.formatMessage("&eDano de Ataque: &f" + warriorPet.getAttackDamage()));
@@ -293,16 +273,10 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
      * Comando para limpar alvo
      */
     private void handleClearTargetCommand(Player player, String[] args) {
-        if (args.length < 2) {
-            player.sendMessage(plugin.formatMessage("&cUso: /warrior cleartarget <nome_do_pet>"));
-            return;
-        }
-        
-        String petName = args[1];
-        WarriorPet warriorPet = getPlayerWarriorPet(player, petName);
+        WarriorPet warriorPet = getActiveWarriorPet(player);
         
         if (warriorPet == null) {
-            player.sendMessage(plugin.formatMessage("&cPet guerreiro '" + petName + "' não encontrado ou não está ativo."));
+            player.sendMessage(plugin.formatMessage("&cVocê não tem nenhum pet guerreiro ativo."));
             return;
         }
         
@@ -311,18 +285,17 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
             ((Mob) warriorPet.getEntity()).setTarget(null);
         }
         
-        player.sendMessage(plugin.formatMessage("&a" + petName + " &enão tem mais alvos específicos."));
+        player.sendMessage(plugin.formatMessage("&a" + warriorPet.getPetName() + " &enão tem mais alvos específicos."));
     }
     
     /**
-     * Obtém um pet guerreiro do jogador pelo nome
+     * Obtém o pet guerreiro ativo do jogador (automaticamente)
      */
-    private WarriorPet getPlayerWarriorPet(Player player, String petName) {
+    private WarriorPet getActiveWarriorPet(Player player) {
         Collection<AbstractPet> pets = plugin.getPetManager().getPlayerPets(player.getUniqueId());
         
         for (AbstractPet pet : pets) {
-            if (pet instanceof WarriorPet && pet.isSpawned() && 
-                pet.getPetName().equalsIgnoreCase(petName)) {
+            if (pet instanceof WarriorPet && pet.isSpawned()) {
                 return (WarriorPet) pet;
             }
         }
@@ -335,13 +308,14 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
      */
     private void sendHelpMessage(Player player) {
         player.sendMessage(plugin.formatMessage("&9&l=== &bComandos de Pets Guerreiros &9&l==="));
-        player.sendMessage(plugin.formatMessage("&e/warrior target <pet> <jogador|mob> &f- Define alvo"));
-        player.sendMessage(plugin.formatMessage("&e/warrior ai <pet> <on|off> &f- Controla IA"));
-        player.sendMessage(plugin.formatMessage("&e/warrior mode <pet> &f- Troca modo (só esqueleto)"));
-        player.sendMessage(plugin.formatMessage("&e/warrior ability <pet> &f- Usa habilidade especial"));
-        player.sendMessage(plugin.formatMessage("&e/warrior status <pet> &f- Mostra status"));
-        player.sendMessage(plugin.formatMessage("&e/warrior cleartarget <pet> &f- Remove alvo"));
+        player.sendMessage(plugin.formatMessage("&e/warrior target <jogador|mob> &f- Define alvo"));
+        player.sendMessage(plugin.formatMessage("&e/warrior ai <on|off> &f- Controla IA"));
+        player.sendMessage(plugin.formatMessage("&e/warrior mode &f- Troca modo (só esqueleto)"));
+        player.sendMessage(plugin.formatMessage("&e/warrior ability &f- Usa habilidade especial"));
+        player.sendMessage(plugin.formatMessage("&e/warrior status &f- Mostra status"));
+        player.sendMessage(plugin.formatMessage("&e/warrior cleartarget &f- Remove alvo"));
         player.sendMessage(plugin.formatMessage("&e/warrior help &f- Mostra esta ajuda"));
+        player.sendMessage(plugin.formatMessage("&7Nota: Os comandos funcionam com o pet guerreiro ativo"));
     }
     
     @Override
@@ -349,19 +323,10 @@ public class WarriorCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
         
         if (!(sender instanceof Player)) return completions;
-        Player player = (Player) sender;
         
         if (args.length == 1) {
             completions.addAll(Arrays.asList("target", "ai", "mode", "ability", "status", "cleartarget", "help"));
         } else if (args.length == 2) {
-            // Sugerir nomes de pets guerreiros
-            Collection<AbstractPet> pets = plugin.getPetManager().getPlayerPets(player.getUniqueId());
-            for (AbstractPet pet : pets) {
-                if (pet instanceof WarriorPet && pet.isSpawned()) {
-                    completions.add(pet.getPetName());
-                }
-            }
-        } else if (args.length == 3) {
             String subCommand = args[0].toLowerCase();
             if (subCommand.equals("target")) {
                 // Sugerir jogadores online
