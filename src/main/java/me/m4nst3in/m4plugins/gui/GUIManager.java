@@ -52,42 +52,44 @@ public class GUIManager {
      * Processa cliques em inventários
      */
     public void handleInventoryClick(InventoryClickEvent event) {
-        String title = event.getView().getTitle();
+        // Adicionado para garantir que o clicker é um jogador
+        if (!(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
         Player player = (Player) event.getWhoClicked();
+        String title = event.getView().getTitle();
         int slot = event.getRawSlot();
         
-        // Menu Principal
-        if (title.equals(TextUtil.color("&9&lM4Pets &8| &7Menu Principal"))) {
+        // Menu Principal  ✨ M4Pets ✨
+        if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &6&l⭐ Menu Principal ⭐"))) {
             event.setCancelled(true);
             
-            if (slot == 11) { // Loja de Pets
+            if (slot == 11) { // Loja de Pets 🛒
                 petStoreGUI.openMainStore(player);
-            } else if (slot == 15) { // Meus Pets
+            } else if (slot == 15) { // Meus Pets 🐾
                 myPetsGUI.openPetsList(player);
-            } else if (slot == 22) { // Informações
+            } else if (slot == 22) { // Informações ℹ
                 petInfoGUI.openInfoMenu(player);
             }
         }
-        // Menu Loja
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &eLoja de Pets"))) {
+        // Menu Loja 🛒
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &e&l🛒 Loja de Pets"))) {
             event.setCancelled(true);
             
-            if (slot == 10) { // Guerreiros
+            if (slot == 10) { // Guerreiros ⚔️
                 petStoreGUI.openCategory(player, "warriors");
-            } else if (slot == 12) { // Montarias
+            } else if (slot == 12) { // Montarias 🐎
                 petStoreGUI.openCategory(player, "mounts");
-            } else if (slot == 14) { // Trabalhadores
-                // Em desenvolvimento
-                player.sendMessage(plugin.formatMessage("&cEsta categoria está em desenvolvimento!"));
-            } else if (slot == 16) { // Decorativos
-                // Em desenvolvimento
-                player.sendMessage(plugin.formatMessage("&cEsta categoria está em desenvolvimento!"));
-            } else if (slot == 26) { // Voltar
+            } else if (slot == 14) { // Trabalhadores 🔨
+                player.sendMessage(plugin.formatMessage("&e&l✨ &fEsta categoria ainda está em desenvolvimento! &e&l✨"));
+            } else if (slot == 16) { // Decorativos 🌸
+                player.sendMessage(plugin.formatMessage("&e&l✨ &fEsta categoria ainda está em desenvolvimento! &e&l✨"));
+            } else if (slot == 26) { // Voltar ◀
                 mainGUI.openMainMenu(player);
             }
         }
-        // Menu Categoria - Guerreiros
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &eWarriors"))) {
+        // Menu Categoria - Guerreiros ⚔️
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &c&l⚔ Guerreiros &c&l⚔"))) {
             event.setCancelled(true);
             
             // Se for um slot de item de pet e não um filler ou voltar
@@ -100,11 +102,12 @@ public class GUIManager {
                 if (petKey != null) {
                     petStoreGUI.processPetPurchase(player, "warriors", petKey);
                 }
-            } else if (slot == 49) { // Voltar
+            } else if (slot == 49) { // Voltar ◀
                 petStoreGUI.openMainStore(player);
             }
         }
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &eMounts"))) {
+        // Menu Categoria - Montarias 🐎
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &6&l🐎 Montarias &6&l🐎"))) {
             event.setCancelled(true);
             
             // Se for um slot de item de pet e não um filler ou voltar
@@ -117,12 +120,12 @@ public class GUIManager {
                 if (petKey != null) {
                     petStoreGUI.processPetPurchase(player, "mounts", petKey);
                 }
-            } else if (slot == 49) { // Voltar
+            } else if (slot == 49) { // Voltar ◀
                 petStoreGUI.openMainStore(player);
             }
         }
-        // Menu Meus Pets
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &aMeus Pets"))) {
+        // Menu Meus Pets 🐾
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🐾 Meus Pets 🐾"))) {
             event.setCancelled(true);
             
             // Se for um slot de pet e não um filler ou voltar
@@ -134,23 +137,23 @@ public class GUIManager {
                 if (pet != null) {
                     myPetsGUI.openPetManagement(player, pet);
                 }
-            } else if (slot == 49) { // Voltar
+            } else if (slot == 49) { // Voltar ◀
                 mainGUI.openMainMenu(player);
             }
         }
-        // Menu de Gerenciamento de Pet
-        else if (title.startsWith(TextUtil.color("&9&lM4Pets &8| &a")) && 
-                 !title.equals(TextUtil.color("&9&lM4Pets &8| &aMeus Pets"))) {
+        // Menu de Gerenciamento de Pet 🛠️
+        else if (title.startsWith(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l")) && 
+                 !title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🐾 Meus Pets 🐾"))) {
             event.setCancelled(true);
             
             // Encontrar o pet sendo gerenciado
-            AbstractPet pet = findPetByName(player, title.substring(TextUtil.color("&9&lM4Pets &8| &a").length()));
+            AbstractPet pet = findPetByName(player, title.substring(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l").length()));
             if (pet != null) {
                 myPetsGUI.handlePetManagementAction(player, pet, slot);
             }
         }
-        // Menu de Cosméticos
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &dCosméticos"))) {
+        // Menu de Cosméticos ✨
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &d&l💎 Cosméticos 💎"))) {
             event.setCancelled(true);
             
             AbstractPet pet = petCosmeticsCallbacks.get(player.getUniqueId());
@@ -158,8 +161,8 @@ public class GUIManager {
                 myPetsGUI.handleCosmeticPurchase(player, pet, slot);
             }
         }
-        // Menu de Variantes
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &6Aparência"))) {
+        // Menu de Variantes 🎨
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &6&l🎨 Aparência 🎨"))) {
             event.setCancelled(true);
             
             AbstractPet pet = petVariantCallbacks.get(player.getUniqueId());
@@ -167,16 +170,16 @@ public class GUIManager {
                 myPetsGUI.handleVariantSelection(player, pet, slot);
             }
         }
-        // Menu de Informações
-        else if (title.equals(TextUtil.color("&9&lM4Pets &8| &bInformações"))) {
+        // Menu de Informações ℹ️
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &b&lℹ Informações ℹ"))) { // Updated title
             event.setCancelled(true);
             
-            if (slot == 26) { // Voltar
+            if (slot == 26) { // Voltar ◀
                 mainGUI.openMainMenu(player);
             }
         }
-        // Menu Pets Guerreiros
-        else if (title.equals("§8Pets Guerreiros")) {
+        // Menu Pets Guerreiros ⚔️
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &c&l⚔ Guerreiros Ativos ⚔"))) { // Updated title
             event.setCancelled(true);
             
             if (slot >= 10 && slot <= 16 && event.getCurrentItem() != null && 
@@ -187,15 +190,15 @@ public class GUIManager {
                 if (warriorPet != null) {
                     warriorGUI.openWarriorControlMenu(player, warriorPet);
                 }
-            } else if (slot == 49) { // Voltar
+            } else if (slot == 49) { // Voltar ◀
                 mainGUI.openMainMenu(player);
             }
         }
-        // Menu Controle de Pet Guerreiro
-        else if (title.startsWith("§8Controle: ")) {
+        // Menu Controle de Pet Guerreiro 🎮
+        else if (title.startsWith(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &7&l🎮 Controle: "))) { // Updated title
             event.setCancelled(true);
             
-            String petName = title.substring("§8Controle: ".length());
+            String petName = title.substring(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &7&l🎮 Controle: ").length()); // Updated title
             WarriorPet warriorPet = getPlayerWarriorPetByName(player, petName);
             
             if (warriorPet != null) {

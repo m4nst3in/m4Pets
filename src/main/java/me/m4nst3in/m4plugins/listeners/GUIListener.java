@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.Inventory;
 
 public class GUIListener implements Listener {
     
@@ -26,10 +25,13 @@ public class GUIListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player)) return;
         
         Player player = (Player) event.getWhoClicked();
-        Inventory inventory = event.getInventory();
+        String title = event.getView().getTitle();
         
-        // Verificar se é um inventário do nosso plugin
-        if (event.getView().getTitle().contains("M4Pets")) {
+        // Verificar se é um inventário do nosso plugin pelos títulos conhecidos
+        if (title.contains("M4Pets") || 
+            title.contains("Pets Guerreiros") || 
+            title.contains("Controle:")) {
+            
             // Delegar para o GUIManager
             plugin.getGuiManager().handleInventoryClick(event);
         }
@@ -41,9 +43,6 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getPlayer() instanceof Player)) return;
-        
-        Player player = (Player) event.getPlayer();
-        Inventory inventory = event.getInventory();
         
         // Não é necessário implementar nada aqui por enquanto
         // Pode ser usado no futuro para persistir estados

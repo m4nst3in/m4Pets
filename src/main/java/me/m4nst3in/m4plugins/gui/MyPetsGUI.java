@@ -29,7 +29,8 @@ public class MyPetsGUI {
     public void openPetsList(Player player) {
         Collection<AbstractPet> pets = plugin.getPetManager().getPlayerPets(player.getUniqueId());
         
-        String title = TextUtil.color("&9&lM4Pets &8| &aMeus Pets");
+        // Normalize title to match GUIManager expectations (single &a&l)
+        String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🐾 Meus Pets 🐾");
         Inventory inventory = Bukkit.createInventory(null, 54, title);
         
         if (pets.isEmpty()) {
@@ -37,9 +38,14 @@ public class MyPetsGUI {
             ItemStack noPetsItem = new ItemStack(Material.BARRIER);
             ItemMeta noPetsMeta = noPetsItem.getItemMeta();
             if (noPetsMeta != null) {
-                noPetsMeta.setDisplayName(TextUtil.color("&cVocê não possui pets!"));
+                noPetsMeta.setDisplayName(TextUtil.color("&c&l❌ &fVocê não possui pets! &c&l❌"));
                 List<String> lore = new ArrayList<>();
-                lore.add(TextUtil.color("&7Visite a loja de pets para adquirir um."));
+                lore.add(TextUtil.color("&7┌─────────────────────────┐"));
+                lore.add(TextUtil.color("&7│ &fVisite a loja de pets  &7│"));
+                lore.add(TextUtil.color("&7│ &fpara adquirir um pet!  &7│"));
+                lore.add(TextUtil.color("&7└─────────────────────────┘"));
+                lore.add("");
+                lore.add(TextUtil.color("&e&l🛒 &6Clique para ir à loja"));
                 noPetsMeta.setLore(lore);
                 noPetsItem.setItemMeta(noPetsMeta);
             }
@@ -59,22 +65,29 @@ public class MyPetsGUI {
                 ItemStack item = new ItemStack(icon);
                 ItemMeta meta = item.getItemMeta();
                 if (meta != null) {
-                    meta.setDisplayName(TextUtil.color("&a&l" + pet.getPetName()));
+                    meta.setDisplayName(TextUtil.color("&a&l🐾 " + pet.getPetName()));
                     
                     List<String> lore = new ArrayList<>();
-                    lore.add(TextUtil.color("&7Tipo: &f" + plugin.getConfigManager().getMainConfig().getString(
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                    lore.add(TextUtil.color("&7📝 &fTipo: &b" + plugin.getConfigManager().getMainConfig().getString(
                         "pets." + pet.getType().getConfigCategory() + "." + pet.getType().name().toLowerCase() + ".name", 
                         pet.getType().name()
                     )));
-                    lore.add(TextUtil.color("&7Nível: &e" + pet.getLevel()));
-                    lore.add(TextUtil.color("&7Vida: &c" + (int)pet.getHealth() + "&7/&c" + (int)pet.getMaxHealth()));
+                    lore.add(TextUtil.color("&7⭐ &fNível: &e&l" + pet.getLevel() + "&7/&e5"));
+                    lore.add(TextUtil.color("&7❤ &fVida: &c" + (int)pet.getHealth() + "&7/&c" + (int)pet.getMaxHealth()));
+                    lore.add("");
                     
                     if (pet.isDead()) {
-                        lore.add(TextUtil.color("&c&lMORTO"));
+                        lore.add(TextUtil.color("&4&l💀 MORTO 💀"));
+                        lore.add(TextUtil.color("&c&oSeu pet precisa ser ressuscitado"));
+                    } else {
+                        lore.add(TextUtil.color("&2&l💚 VIVO 💚"));
+                        lore.add(TextUtil.color("&a&oSeu pet está saudável"));
                     }
                     
                     lore.add("");
-                    lore.add(TextUtil.color("&aClique para gerenciar"));
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                    lore.add(TextUtil.color("&e&l👆 &6Clique para gerenciar!"));
                     
                     meta.setLore(lore);
                     item.setItemMeta(meta);
@@ -97,7 +110,12 @@ public class MyPetsGUI {
         ItemStack backItem = new ItemStack(Material.ARROW);
         ItemMeta backMeta = backItem.getItemMeta();
         if (backMeta != null) {
-            backMeta.setDisplayName(TextUtil.color("&c&lVoltar"));
+            backMeta.setDisplayName(TextUtil.color("&c&l◀ &fVoltar ao Menu Principal"));
+            List<String> lore = new ArrayList<>();
+            lore.add(TextUtil.color("&7Retornar ao menu principal"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l👆 &6Clique para voltar"));
+            backMeta.setLore(lore);
             backItem.setItemMeta(backMeta);
         }
         inventory.setItem(49, backItem);
@@ -130,19 +148,31 @@ public class MyPetsGUI {
         Map<UUID, Inventory> playerInventories = petManagementInventories.get(playerUUID);
         
         // Criar um novo inventário para este pet
-        String title = TextUtil.color("&9&lM4Pets &8| &a" + pet.getPetName());
+        String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🛠 " + pet.getPetName() + " &a&l🛠");
         Inventory inventory = Bukkit.createInventory(null, 36, title);
         
         // Summon/Despawn
         ItemStack summonItem = new ItemStack(pet.isSpawned() ? Material.RED_DYE : Material.LIME_DYE);
         ItemMeta summonMeta = summonItem.getItemMeta();
         if (summonMeta != null) {
-            summonMeta.setDisplayName(TextUtil.color(pet.isSpawned() ? "&c&lRemover Pet" : "&a&lInvocar Pet"));
+            summonMeta.setDisplayName(TextUtil.color(pet.isSpawned() ? "&c&l❌ Remover Pet" : "&a&l✅ Invocar Pet"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color(pet.isSpawned() 
-                ? "&7Clique para remover seu pet do mundo" 
-                : "&7Clique para invocar seu pet"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            if (pet.isSpawned()) {
+                lore.add(TextUtil.color("&7🌍 &fSeu pet está no mundo"));
+                lore.add(TextUtil.color("&7📍 &fClique para removê-lo"));
+                lore.add("");
+                lore.add(TextUtil.color("&c⚠ &fO pet será despawnado"));
+            } else {
+                lore.add(TextUtil.color("&7👻 &fSeu pet não está no mundo"));
+                lore.add(TextUtil.color("&7🎯 &fClique para invocá-lo"));
+                lore.add("");
+                lore.add(TextUtil.color("&a✨ &fO pet aparecerá ao seu lado"));
+            }
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&e&l👆 &6Clique para " + (pet.isSpawned() ? "remover" : "invocar")));
             
             summonMeta.setLore(lore);
             summonItem.setItemMeta(summonMeta);
@@ -153,10 +183,17 @@ public class MyPetsGUI {
         ItemStack renameItem = new ItemStack(Material.NAME_TAG);
         ItemMeta renameMeta = renameItem.getItemMeta();
         if (renameMeta != null) {
-            renameMeta.setDisplayName(TextUtil.color("&e&lRenomear Pet"));
+            renameMeta.setDisplayName(TextUtil.color("&e&l✏️ Renomear Pet"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color("&7Clique para dar um novo nome ao seu pet"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&7📝 &fNome atual: &b" + pet.getPetName()));
+            lore.add("");
+            lore.add(TextUtil.color("&7✨ &fDê um novo nome especial"));
+            lore.add(TextUtil.color("&7   &fpara seu companheiro!"));
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&e&l👆 &6Clique para renomear"));
             
             renameMeta.setLore(lore);
             renameItem.setItemMeta(renameMeta);
@@ -171,12 +208,17 @@ public class MyPetsGUI {
             boolean maxLevelReached = pet.getLevel() >= maxLevel;
             
             upgradeMeta.setDisplayName(TextUtil.color(maxLevelReached 
-                ? "&7&lNível Máximo" 
-                : "&b&lMelhorar Pet"));
+                ? "&7&l🏆 Nível Máximo Atingido" 
+                : "&b&l⬆️ Melhorar Pet"));
             
             List<String> lore = new ArrayList<>();
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
             if (maxLevelReached) {
-                lore.add(TextUtil.color("&7Seu pet já está no nível máximo!"));
+                lore.add(TextUtil.color("&7🏆 &fParabéns! Seu pet alcançou"));
+                lore.add(TextUtil.color("&7   &fo nível máximo possível!"));
+                lore.add("");
+                lore.add(TextUtil.color("&e✨ &6Habilidade especial desbloqueada!"));
+                lore.add(TextUtil.color("&a&l🎉 Pet completamente evoluído!"));
             } else {
                 double petCost = plugin.getConfigManager().getMainConfig().getDouble(
                     "pets." + pet.getType().getConfigCategory() + "." + pet.getType().name().toLowerCase() + ".cost", 
@@ -184,12 +226,22 @@ public class MyPetsGUI {
                 );
                 double upgradeCost = petCost * 0.25 * pet.getLevel();
                 
-                lore.add(TextUtil.color("&7Nível atual: &e" + pet.getLevel()));
-                lore.add(TextUtil.color("&7Próximo nível: &e" + (pet.getLevel() + 1)));
+                lore.add(TextUtil.color("&7⭐ &fNível atual: &e&l" + pet.getLevel() + "&7/&e" + maxLevel));
+                lore.add(TextUtil.color("&7🔮 &fPróximo nível: &a&l" + (pet.getLevel() + 1)));
                 lore.add("");
-                lore.add(TextUtil.color("&7Custo: &e" + String.format("%.2f", upgradeCost)));
+                lore.add(TextUtil.color("&7💰 &fCusto: &6$" + String.format("%.2f", upgradeCost)));
                 lore.add("");
-                lore.add(TextUtil.color("&7Clique para melhorar seu pet"));
+                lore.add(TextUtil.color("&7📈 &fBenefícios do upgrade:"));
+                lore.add(TextUtil.color("&a  ❤ &fMais vida"));
+                lore.add(TextUtil.color("&a  ⚡ &fMais velocidade"));
+                lore.add(TextUtil.color("&a  💪 &fMais força"));
+            }
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            if (!maxLevelReached) {
+                lore.add(TextUtil.color("&e&l👆 &6Clique para melhorar!"));
+            } else {
+                lore.add(TextUtil.color("&7&l🎯 Pet no nível máximo"));
             }
             
             upgradeMeta.setLore(lore);
@@ -214,12 +266,25 @@ public class MyPetsGUI {
                 int resurrectPercent = plugin.getConfigManager().getMainConfig().getInt("economy.resurrect-cost-percent", 25);
                 double resurrectCost = petCost * (resurrectPercent / 100.0);
                 
-                lore.add(TextUtil.color("&7Seu pet está morto!"));
-                lore.add(TextUtil.color("&7Custo para ressuscitar: &e" + String.format("%.2f", resurrectCost)));
+                lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                lore.add(TextUtil.color("&7💀 &cSeu pet está morto!"));
+                lore.add(TextUtil.color("&7💰 &fCusto para ressuscitar:"));
+                lore.add(TextUtil.color("&7   &e&l" + String.format("%.2f", resurrectCost) + " &7moedas"));
                 lore.add("");
-                lore.add(TextUtil.color("&7Clique para ressuscitar seu pet"));
+                lore.add(TextUtil.color("&7✨ &fReviva seu companheiro"));
+                lore.add(TextUtil.color("&7   &fe volte a se aventurar!"));
+                lore.add("");
+                lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                lore.add(TextUtil.color("&e&l👆 &6Clique para ressuscitar"));
             } else {
-                lore.add(TextUtil.color("&7Seu pet está vivo"));
+                lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                lore.add(TextUtil.color("&7💚 &aSeu pet está vivo e"));
+                lore.add(TextUtil.color("&7   &asaudável!"));
+                lore.add("");
+                lore.add(TextUtil.color("&7🎉 &fNão precisa de"));
+                lore.add(TextUtil.color("&7   &fressurreição"));
+                lore.add("");
+                lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
             }
             
             resurrectMeta.setLore(lore);
@@ -231,12 +296,21 @@ public class MyPetsGUI {
         ItemStack cosmeticsItem = new ItemStack(Material.NETHER_STAR);
         ItemMeta cosmeticsMeta = cosmeticsItem.getItemMeta();
         if (cosmeticsMeta != null) {
-            cosmeticsMeta.setDisplayName(TextUtil.color("&d&lCosméticos"));
+            cosmeticsMeta.setDisplayName(TextUtil.color("&d&l💎 &f&lCosméticos"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color("&7Customize a aparência do seu pet"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&7✨ &fTorne seu pet único com"));
+            lore.add(TextUtil.color("&7   &fcosméticos exclusivos!"));
             lore.add("");
-            lore.add(TextUtil.color("&7Clique para ver os cosméticos disponíveis"));
+            lore.add(TextUtil.color("&7💎 &fAcessórios especiais"));
+            lore.add(TextUtil.color("&7🌟 &fEfeitos visuais"));
+            lore.add(TextUtil.color("&7🎭 &fPersonalizações únicas"));
+            lore.add("");
+            lore.add(TextUtil.color("&7💰 &fAdquira na loja do pet"));
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&e&l👆 &6Clique para ver itens"));
             
             cosmeticsMeta.setLore(lore);
             cosmeticsItem.setItemMeta(cosmeticsMeta);
@@ -247,13 +321,20 @@ public class MyPetsGUI {
         ItemStack variantItem = new ItemStack(Material.LEATHER_HORSE_ARMOR);
         ItemMeta variantMeta = variantItem.getItemMeta();
         if (variantMeta != null) {
-            variantMeta.setDisplayName(TextUtil.color("&6&lAparência"));
+            variantMeta.setDisplayName(TextUtil.color("&6&l🎨 &f&lAparência"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color("&7Mude a aparência do seu pet"));
-            lore.add(TextUtil.color("&7Variante atual: &f" + pet.getVariant()));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&7🌈 &fPersonalize a aparência"));
+            lore.add(TextUtil.color("&7   &fdo seu querido pet!"));
             lore.add("");
-            lore.add(TextUtil.color("&7Clique para alterar a aparência"));
+            lore.add(TextUtil.color("&7🎯 &fVariante atual: &b&l" + pet.getVariant()));
+            lore.add("");
+            lore.add(TextUtil.color("&7✨ &fEscolha entre diversas"));
+            lore.add(TextUtil.color("&7   &fcores e estilos únicos"));
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&e&l👆 &6Clique para alterar"));
             
             variantMeta.setLore(lore);
             variantItem.setItemMeta(variantMeta);
@@ -374,7 +455,7 @@ public class MyPetsGUI {
      * Abre o menu de cosméticos para o pet
      */
     public void openCosmeticsMenu(Player player, AbstractPet pet) {
-        String title = TextUtil.color("&9&lM4Pets &8| &dCosméticos");
+        String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &d&l💎 Cosméticos &d&l💎");
         Inventory inventory = Bukkit.createInventory(null, 36, title);
         
         // Obter configuração de cosméticos
@@ -391,21 +472,30 @@ public class MyPetsGUI {
                 ItemStack item = new ItemStack(icon);
                 ItemMeta meta = item.getItemMeta();
                 if (meta != null) {
-                    meta.setDisplayName(TextUtil.color("&d&l" + name));
+                    meta.setDisplayName(TextUtil.color("&d&l💎 " + name));
                     
                     List<String> lore = new ArrayList<>();
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
                     
                     boolean hasCosmetic = particleType.equals(pet.getCosmeticParticle());
                     
                     if (hasCosmetic) {
-                        lore.add(TextUtil.color("&aEste cosmético está ativado"));
+                        lore.add(TextUtil.color("&a&l✅ &fCosmético Ativado"));
+                        lore.add(TextUtil.color("&7✨ &fEste efeito está sendo"));
+                        lore.add(TextUtil.color("&7   &faplicado ao seu pet!"));
                         lore.add("");
-                        lore.add(TextUtil.color("&eClique para desativar"));
+                        lore.add(TextUtil.color("&c&l❌ &6Clique para desativar"));
                     } else {
-                        lore.add(TextUtil.color("&7Preço: &e" + cost));
+                        lore.add(TextUtil.color("&7💰 &fPreço: &e&l$" + cost));
+                        lore.add(TextUtil.color("&7🎆 &fEfeito: &b" + particleType));
                         lore.add("");
-                        lore.add(TextUtil.color("&aClique para comprar"));
+                        lore.add(TextUtil.color("&7✨ &fAdicione este efeito"));
+                        lore.add(TextUtil.color("&7   &fvisual ao seu pet!"));
+                        lore.add("");
+                        lore.add(TextUtil.color("&a&l💳 &6Clique para comprar"));
                     }
+                    lore.add("");
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
                     
                     meta.setLore(lore);
                     item.setItemMeta(meta);
@@ -525,7 +615,7 @@ public class MyPetsGUI {
      * Abre o menu de variantes para o pet
      */
     public void openVariantMenu(Player player, AbstractPet pet) {
-        String title = TextUtil.color("&9&lM4Pets &8| &6Aparência");
+        String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &6&l🎨 Aparência &6&l🎨");
         Inventory inventory = Bukkit.createInventory(null, 36, title);
         
         // Obter lista de variantes para este tipo de pet
@@ -543,15 +633,26 @@ public class MyPetsGUI {
                 ItemStack item = new ItemStack(icon);
                 ItemMeta meta = item.getItemMeta();
                 if (meta != null) {
-                    meta.setDisplayName(TextUtil.color("&6&l" + variant));
+                    meta.setDisplayName(TextUtil.color("&6&l🎨 " + variant));
                     
                     List<String> lore = new ArrayList<>();
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
                     
                     if (variant.equalsIgnoreCase(pet.getVariant())) {
-                        lore.add(TextUtil.color("&aSelecionado atualmente"));
+                        lore.add(TextUtil.color("&a&l✅ &fVariante Selecionada"));
+                        lore.add(TextUtil.color("&7🎯 &fEsta é a aparência atual"));
+                        lore.add(TextUtil.color("&7   &fdo seu pet!"));
+                        lore.add("");
+                        lore.add(TextUtil.color("&2&l🎪 &aJá equipado"));
                     } else {
-                        lore.add(TextUtil.color("&7Clique para selecionar esta variante"));
+                        lore.add(TextUtil.color("&7🌈 &fAparência: &b" + variant));
+                        lore.add(TextUtil.color("&7✨ &fMude o visual do seu pet"));
+                        lore.add(TextUtil.color("&7   &fpara esta variante!"));
+                        lore.add("");
+                        lore.add(TextUtil.color("&e&l👆 &6Clique para selecionar"));
                     }
+                    lore.add("");
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
                     
                     meta.setLore(lore);
                     item.setItemMeta(meta);

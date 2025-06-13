@@ -31,7 +31,7 @@ public class MainGUI {
         ConfigurationSection guiConfig = plugin.getConfigManager().getMainConfig().getConfigurationSection("gui");
         if (guiConfig == null) return;
         
-        String title = TextUtil.color(guiConfig.getString("main-title", "&9&lM4Pets &8| &7Menu Principal"));
+        String title = TextUtil.color(guiConfig.getString("main-title", "&5&l✨ &9&lM4Pets &8&l| &6&l⭐ Menu Principal ⭐"));
         mainInventory = Bukkit.createInventory(null, 27, title);
         
         ConfigurationSection itemsConfig = guiConfig.getConfigurationSection("main-items");
@@ -144,5 +144,12 @@ public class MainGUI {
      */
     public void openMainMenu(Player player) {
         player.openInventory(mainInventory);
+    }
+    
+    /**
+     * Recria o inventário principal (útil quando a config é alterada)
+     */
+    public void recreateInventory() {
+        createMainInventory();
     }
 }

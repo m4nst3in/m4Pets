@@ -4,6 +4,7 @@ import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.abstractpets.AbstractPet;
 import me.m4nst3in.m4plugins.pets.abstractpets.WarriorPet;
 import me.m4nst3in.m4plugins.pets.warriors.SkeletonPet;
+import me.m4nst3in.m4plugins.util.TextUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ public class WarriorGUI {
      * Abre o menu principal de pets guerreiros
      */
     public void openWarriorMenu(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 54, "§8Pets Guerreiros");
+        Inventory inv = Bukkit.createInventory(null, 54, TextUtil.color("&8&l⚔️ &c&lPets Guerreiros &8&l⚔️"));
         
         // Preencher bordas
         ItemStack border = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -69,8 +70,13 @@ public class WarriorGUI {
         ItemStack backButton = new ItemStack(Material.ARROW);
         ItemMeta backMeta = backButton.getItemMeta();
         if (backMeta != null) {
-            backMeta.setDisplayName("§cVoltar");
-            backMeta.setLore(Arrays.asList("§7Voltar ao menu principal"));
+            backMeta.setDisplayName(TextUtil.color("&c&l◀ &fVoltar ao Menu Principal"));
+            backMeta.setLore(Arrays.asList(
+                TextUtil.color("&7Retornar ao menu principal"),
+                TextUtil.color("&7do M4Pets"),
+                "",
+                TextUtil.color("&e&l👆 &6Clique para voltar")
+            ));
             backButton.setItemMeta(backMeta);
         }
         inv.setItem(49, backButton);
@@ -82,7 +88,7 @@ public class WarriorGUI {
      * Abre o menu de controle específico de um pet guerreiro
      */
     public void openWarriorControlMenu(Player player, WarriorPet warriorPet) {
-        Inventory inv = Bukkit.createInventory(null, 45, "§8Controle: " + warriorPet.getPetName());
+        Inventory inv = Bukkit.createInventory(null, 45, TextUtil.color("&8&l🎮 &f&lControle: " + warriorPet.getPetName()));
         
         // Preencher bordas
         ItemStack border = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -113,11 +119,15 @@ public class WarriorGUI {
         ItemStack clearTargetItem = new ItemStack(Material.BARRIER);
         ItemMeta clearMeta = clearTargetItem.getItemMeta();
         if (clearMeta != null) {
-            clearMeta.setDisplayName("§cLimpar Alvo");
+            clearMeta.setDisplayName(TextUtil.color("&c&l❌ Limpar Alvo"));
             clearMeta.setLore(Arrays.asList(
-                "§7Remove o alvo atual do pet",
-                "§7",
-                "§eClique para executar"
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&7🎯 &fRemove o alvo atual do pet"),
+                TextUtil.color("&7🧭 &fO pet parará de atacar"),
+                TextUtil.color("&7   &fespecificamente alguém"),
+                "",
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&e&l👆 &6Clique para executar")
             ));
             clearTargetItem.setItemMeta(clearMeta);
         }
@@ -128,11 +138,17 @@ public class WarriorGUI {
             ItemStack abilityItem = new ItemStack(Material.NETHER_STAR);
             ItemMeta abilityMeta = abilityItem.getItemMeta();
             if (abilityMeta != null) {
-                abilityMeta.setDisplayName("§6Habilidade Especial");
+                abilityMeta.setDisplayName(TextUtil.color("&6&l⭐ Habilidade Especial"));
                 abilityMeta.setLore(Arrays.asList(
-                    "§7" + warriorPet.getLevel5AbilityDescription(),
-                    "§7",
-                    "§eClique para usar"
+                    TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                    TextUtil.color("&7✨ &fDescrição:"),
+                    TextUtil.color("&e" + warriorPet.getLevel5AbilityDescription()),
+                    "",
+                    TextUtil.color("&7🔥 &fHabilidade de nível 5"),
+                    TextUtil.color("&7💫 &fPoder especial único!"),
+                    "",
+                    TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                    TextUtil.color("&e&l👆 &6Clique para usar")
                 ));
                 abilityItem.setItemMeta(abilityMeta);
             }
@@ -145,14 +161,27 @@ public class WarriorGUI {
             ItemStack modeItem = new ItemStack(skeleton.isRangedMode() ? Material.BOW : Material.IRON_SWORD);
             ItemMeta modeMeta = modeItem.getItemMeta();
             if (modeMeta != null) {
-                String currentMode = skeleton.isRangedMode() ? "Arqueiro" : "Guerreiro";
-                String nextMode = skeleton.isRangedMode() ? "Guerreiro" : "Arqueiro";
+                String currentModeIcon = skeleton.isRangedMode() ? "🏹" : "⚔️";
+                String currentMode = skeleton.isRangedMode() ? "&e&lArqueiro" : "&c&lGuerreiro";
+                String nextMode = skeleton.isRangedMode() ? "&c&lGuerreiro" : "&e&lArqueiro";
                 
-                modeMeta.setDisplayName("§eModo de Combate");
+                modeMeta.setDisplayName(TextUtil.color("&6&l🔄 &f&lModo de Combate"));
                 modeMeta.setLore(Arrays.asList(
-                    "§7Modo atual: §f" + currentMode,
-                    "§7",
-                    "§eClique para trocar para §f" + nextMode
+                    TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                    TextUtil.color("&7" + currentModeIcon + " &fModo atual: " + currentMode),
+                    "",
+                    TextUtil.color("&7🏹 &fModo Arqueiro:"),
+                    TextUtil.color("&7   &a✓ &fAtaque à distância"),
+                    TextUtil.color("&7   &a✓ &fMaior alcance"),
+                    TextUtil.color("&7   &c✗ &fMenor dano por tiro"),
+                    "",
+                    TextUtil.color("&7⚔️ &fModo Guerreiro:"),
+                    TextUtil.color("&7   &a✓ &fAtaque corpo a corpo"),
+                    TextUtil.color("&7   &a✓ &fMaior dano por hit"),
+                    TextUtil.color("&7   &c✗ &fMenor alcance"),
+                    "",
+                    TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                    TextUtil.color("&e&l👆 &6Clique para trocar para " + nextMode)
                 ));
                 modeItem.setItemMeta(modeMeta);
             }
@@ -163,8 +192,13 @@ public class WarriorGUI {
         ItemStack backButton = new ItemStack(Material.ARROW);
         ItemMeta backMeta = backButton.getItemMeta();
         if (backMeta != null) {
-            backMeta.setDisplayName("§cVoltar");
-            backMeta.setLore(Arrays.asList("§7Voltar ao menu de guerreiros"));
+            backMeta.setDisplayName(TextUtil.color("&c&l◀ &fVoltar aos Guerreiros"));
+            backMeta.setLore(Arrays.asList(
+                TextUtil.color("&7Retornar ao menu principal"),
+                TextUtil.color("&7dos pets guerreiros"),
+                "",
+                TextUtil.color("&e&l👆 &6Clique para voltar")
+            ));
             backButton.setItemMeta(backMeta);
         }
         inv.setItem(40, backButton);
@@ -196,25 +230,31 @@ public class WarriorGUI {
         
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("§e" + warriorPet.getPetName());
+            meta.setDisplayName(TextUtil.color("&6&l⚔️ &e&l" + warriorPet.getPetName()));
             
-            String status = warriorPet.isDead() ? "§c§lMORTO" : 
-                           warriorPet.isSpawned() ? "§a§lATIVO" : "§7§lINATIVO";
+            String statusIcon = warriorPet.isDead() ? "💀" : 
+                               warriorPet.isSpawned() ? "✅" : "❌";
+            String status = warriorPet.isDead() ? "&c&lMORTO" : 
+                           warriorPet.isSpawned() ? "&a&lATIVO" : "&7&lINATIVO";
             
-            String ai = warriorPet.isAIEnabled() ? "§aAtivada" : "§cDesativada";
+            String aiIcon = warriorPet.isAIEnabled() ? "🤖" : "🔴";
+            String ai = warriorPet.isAIEnabled() ? "&a&lAtivada" : "&c&lDesativada";
+            String targetIcon = warriorPet.getTargetPlayerName() != null ? "🎯" : "🚫";
             String target = warriorPet.getTargetPlayerName() != null ? 
-                           "§c" + warriorPet.getTargetPlayerName() : "§7Nenhum";
+                           "&c&l" + warriorPet.getTargetPlayerName() : "&7&lNenhum";
             
             meta.setLore(Arrays.asList(
-                "§7Tipo: §f" + warriorPet.getType().name(),
-                "§7Status: " + status,
-                "§7Nível: §f" + warriorPet.getLevel(),
-                "§7Vida: §c" + (int)warriorPet.getHealth() + "§f/§c" + (int)warriorPet.getMaxHealth(),
-                "§7Dano: §f" + warriorPet.getAttackDamage(),
-                "§7IA: " + ai,
-                "§7Alvo: " + target,
-                "§7",
-                "§eClique para controlar"
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&7🏷️ &fTipo: &e&l" + warriorPet.getType().name()),
+                TextUtil.color("&7" + statusIcon + " &fStatus: " + status),
+                TextUtil.color("&7⭐ &fNível: &b&l" + warriorPet.getLevel()),
+                TextUtil.color("&7❤️ &fVida: &c&l" + (int)warriorPet.getHealth() + "&f/&c&l" + (int)warriorPet.getMaxHealth()),
+                TextUtil.color("&7⚔️ &fDano: &e&l" + warriorPet.getAttackDamage()),
+                TextUtil.color("&7" + aiIcon + " &fIA: " + ai),
+                TextUtil.color("&7" + targetIcon + " &fAlvo: " + target),
+                "",
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&e&l👆 &6Clique para controlar")
             ));
             
             item.setItemMeta(meta);
@@ -231,21 +271,27 @@ public class WarriorGUI {
         ItemMeta meta = item.getItemMeta();
         
         if (meta != null) {
-            meta.setDisplayName("§eStatus do Pet");
+            meta.setDisplayName(TextUtil.color("&b&l📊 &f&lStatus do Pet"));
             
-            String status = warriorPet.isDead() ? "§c§lMORTO" : 
-                           warriorPet.isSpawned() ? "§a§lATIVO" : "§7§lINATIVO";
+            String statusIcon = warriorPet.isDead() ? "💀" : 
+                               warriorPet.isSpawned() ? "✅" : "❌";
+            String status = warriorPet.isDead() ? "&c&lMORTO" : 
+                           warriorPet.isSpawned() ? "&a&lATIVO" : "&7&lINATIVO";
             
             meta.setLore(Arrays.asList(
-                "§7Nome: §f" + warriorPet.getPetName(),
-                "§7Tipo: §f" + warriorPet.getType().name(),
-                "§7Status: " + status,
-                "§7Nível: §f" + warriorPet.getLevel(),
-                "§7Vida: §c" + (int)warriorPet.getHealth() + "§f/§c" + (int)warriorPet.getMaxHealth(),
-                "§7Dano de Ataque: §f" + warriorPet.getAttackDamage(),
-                "§7Velocidade de Ataque: §f" + warriorPet.getAttackSpeed(),
-                "§7Raio de Defesa: §f" + (int)warriorPet.getDefenseRadius() + " blocos",
-                "§7Raio de Ataque: §f" + (int)warriorPet.getAttackRadius() + " blocos"
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&7🏷️ &fNome: &e&l" + warriorPet.getPetName()),
+                TextUtil.color("&7🏷️ &fTipo: &b&l" + warriorPet.getType().name()),
+                TextUtil.color("&7" + statusIcon + " &fStatus: " + status),
+                TextUtil.color("&7⭐ &fNível: &6&l" + warriorPet.getLevel()),
+                "",
+                TextUtil.color("&c❤️ &fVida: &c&l" + (int)warriorPet.getHealth() + "&f/&c&l" + (int)warriorPet.getMaxHealth()),
+                TextUtil.color("&e⚔️ &fDano de Ataque: &e&l" + warriorPet.getAttackDamage()),
+                TextUtil.color("&a⚡ &fVelocidade de Ataque: &a&l" + warriorPet.getAttackSpeed()),
+                TextUtil.color("&b🛡️ &fRaio de Defesa: &b&l" + (int)warriorPet.getDefenseRadius() + " &fblocos"),
+                TextUtil.color("&d🎯 &fRaio de Ataque: &d&l" + (int)warriorPet.getAttackRadius() + " &fblocos"),
+                "",
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬")
             ));
             
             item.setItemMeta(meta);
@@ -263,19 +309,23 @@ public class WarriorGUI {
         ItemMeta meta = item.getItemMeta();
         
         if (meta != null) {
-            String status = warriorPet.isAIEnabled() ? "§aAtivada" : "§cDesativada";
-            String action = warriorPet.isAIEnabled() ? "Desativar" : "Ativar";
+            String statusIcon = warriorPet.isAIEnabled() ? "🤖" : "🔴";
+            String status = warriorPet.isAIEnabled() ? "&a&lAtivada" : "&c&lDesativada";
+            String action = warriorPet.isAIEnabled() ? "&c&lDesativar" : "&a&lAtivar";
             
-            meta.setDisplayName("§eControle de IA");
+            meta.setDisplayName(TextUtil.color("&6&l🤖 &f&lControle de IA"));
             meta.setLore(Arrays.asList(
-                "§7Status atual: " + status,
-                "§7",
-                "§7Com IA ativada, o pet irá:",
-                "§7• Defender você automaticamente",
-                "§7• Atacar alvos definidos",
-                "§7• Usar habilidades especiais",
-                "§7",
-                "§eClique para " + action.toLowerCase()
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&7" + statusIcon + " &fStatus atual: " + status),
+                "",
+                TextUtil.color("&7🔧 &fCom IA ativada, o pet irá:"),
+                TextUtil.color("&7   &a⚡ &fDefender você automaticamente"),
+                TextUtil.color("&7   &a🎯 &fAtacar alvos definidos"),
+                TextUtil.color("&7   &a✨ &fUsar habilidades especiais"),
+                TextUtil.color("&7   &a🧠 &fTomar decisões inteligentes"),
+                "",
+                TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"),
+                TextUtil.color("&e&l👆 &6Clique para " + action.toLowerCase())
             ));
             
             item.setItemMeta(meta);

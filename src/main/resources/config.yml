@@ -45,81 +45,108 @@ holograms:
 # Configurações de GUI
 gui:
   # Título da GUI principal
-  main-title: "&9&lM4Pets &8| &7Menu Principal"
+  main-title: "&5&l✨ &9&lM4Pets &8&l| &6&l⭐ Menu Principal ⭐"
   
   # Itens da GUI principal
   main-items:
     pet-store:
       material: "CHEST"
-      name: "&e&lLoja de Pets"
+      name: "&e&l🛒 &f&lLoja de Pets"
       lore:
-        - "&7Clique para abrir a loja de pets"
-        - "&7e adquirir novos companheiros!"
+        - "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+        - "&7🌟 &fDescubra pets incríveis"
+        - "&7   &fpara todas as aventuras!"
+        - ""
+        - "&7⚔️ &fGuerreiros poderosos"
+        - "&7🐎 &fMontarias velozes"
+        - "&7🔨 &fTrabalhadores úteis &7(em breve)"
+        - "&7🌸 &fDecorativos únicos &7(em breve)"
+        - ""
+        - "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+        - "&e&l👆 &6Clique para explorar!"
       slot: 11
     
     my-pets:
       material: "NAME_TAG"
-      name: "&a&lMeus Pets"
+      name: "&a&l🐾 &f&lMeus Pets"
       lore:
-        - "&7Gerencie seus pets, atribua nomes,"
-        - "&7melhore suas habilidades e mais!"
+        - "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+        - "&7💚 &fGerencie seus companheiros"
+        - "&7   &ffiéis e suas habilidades!"
+        - ""
+        - "&7✏️ &fRenomeie seus pets"
+        - "&7⚡ &fMelhore suas estatísticas"
+        - "&7💎 &fPersonalize com cosméticos"
+        - "&7🎨 &fMude suas aparências"
+        - ""
+        - "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+        - "&e&l👆 &6Clique para gerenciar!"
       slot: 15
     
     info:
       material: "BOOK"
-      name: "&b&lInformações"
+      name: "&b&lℹ &f&lInformações"
       lore:
-        - "&7Saiba como funcionam os pets"
-        - "&7e todas suas funcionalidades!"
+        - "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+        - "&7📖 &fApenda tudo sobre"
+        - "&7   &fo sistema de pets!"
+        - ""
+        - "&7🎯 &fComo usar comandos"
+        - "&7🎮 &fTipos de pets disponíveis"
+        - "&7💡 &fDicas e truques"
+        - "&7🛠️ &fSuporte e ajuda"
+        - ""
+        - "&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+        - "&e&l👆 &6Clique para aprender!"
       slot: 22
       
   # Configurações da GUI da loja
   store:
-    title: "&9&lM4Pets &8| &eLoja de Pets"
+    title: "&5&l✨ &9&lM4Pets &8&l| &e&l🛒 Loja de Pets" # Updated title
     
     # Categorias na loja
     categories:
       warrior:
         enabled: true
         material: "DIAMOND_SWORD"
-        name: "&c&lPets Guerreiros"
+        name: "&c&l⚔ Guerreiros ⚔" # Updated name
         lore:
-          - "&7Pets que lutam ao seu lado"
-          - "&7e te protegem dos inimigos!"
+          - "&7Valentes companheiros de batalha," # Updated lore
+          - "&7prontos para defender você!"      # Updated lore
         slot: 10
         implemented: true
         
       mount:
         enabled: true
         material: "SADDLE"
-        name: "&6&lPets Montaria"
+        name: "&6&l🐎 Montarias 🐎" # Updated name
         lore:
-          - "&7Pets que você pode montar"
-          - "&7e se locomover pelo mundo!"
+          - "&7Explore o mundo com agilidade"  # Updated lore
+          - "&7montado em criaturas leais!"     # Updated lore
         slot: 12
         implemented: true
         
       worker:
         enabled: true
         material: "IRON_PICKAXE"
-        name: "&e&lPets Trabalhadores"
+        name: "&e&l🔨 Trabalhadores 🔨" # Updated name
         lore:
-          - "&7Pets que trabalham para você"
-          - "&7e te ajudam em diversas tarefas!"
+          - "&7Aliados incansáveis para suas tarefas," # Updated lore
+          - "&7coletando e produzindo por você!"    # Updated lore
           - ""
-          - "&c&lEM DESENVOLVIMENTO"
+          - "&e&l✨ EM BREVE! ✨" # Updated "coming soon"
         slot: 14
         implemented: false
         
       decorative:
         enabled: true
         material: "PAINTING"
-        name: "&d&lPets Decorativos"
+        name: "&d&l🌸 Decorativos 🌸" # Updated name
         lore:
-          - "&7Pets com visual único"
-          - "&7para decorar seu mundo!"
+          - "&7Adicione um toque de charme e estilo" # Updated lore
+          - "&7com pets de beleza singular!"        # Updated lore
           - ""
-          - "&c&lEM DESENVOLVIMENTO"
+          - "&e&l✨ EM BREVE! ✨" # Updated "coming soon"
         slot: 16
         implemented: false
 

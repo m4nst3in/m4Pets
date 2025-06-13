@@ -26,20 +26,28 @@ public class PetInfoGUI {
      * Cria o inventário de informações
      */
     private void createInfoInventory() {
-        String title = TextUtil.color("&9&lM4Pets &8| &bInformações");
+        String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &b&lℹ Informações ℹ&b&l");
         infoInventory = Bukkit.createInventory(null, 36, title);
         
         // Item para informações gerais
         ItemStack generalItem = new ItemStack(Material.BOOK);
         ItemMeta generalMeta = generalItem.getItemMeta();
         if (generalMeta != null) {
-            generalMeta.setDisplayName(TextUtil.color("&b&lInformações Gerais"));
+            generalMeta.setDisplayName(TextUtil.color("&b&l📚 Informações Gerais"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color("&7M4Pets é um sistema completo de pets"));
-            lore.add(TextUtil.color("&7para o seu servidor Minecraft!"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&7🎮 &fM4Pets é um sistema completo"));
+            lore.add(TextUtil.color("&7   &fde pets para Minecraft!"));
             lore.add("");
-            lore.add(TextUtil.color("&7Desenvolvido por: &bm4nst3in"));
+            lore.add(TextUtil.color("&7✨ &fRecursos principais:"));
+            lore.add(TextUtil.color("&a  🐾 &fPets únicos e personalizáveis"));
+            lore.add(TextUtil.color("&a  ⭐ &fSistema de níveis e upgrades"));
+            lore.add(TextUtil.color("&a  💎 &fCosméticos e aparências"));
+            lore.add(TextUtil.color("&a  ⚔️ &fPets guerreiros de combate"));
+            lore.add("");
+            lore.add(TextUtil.color("&7👨‍💻 &fDesenvolvido por: &b&lm4nst3in"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
             
             generalMeta.setLore(lore);
             generalItem.setItemMeta(generalMeta);
@@ -50,14 +58,25 @@ public class PetInfoGUI {
         ItemStack commandsItem = new ItemStack(Material.COMMAND_BLOCK);
         ItemMeta commandsMeta = commandsItem.getItemMeta();
         if (commandsMeta != null) {
-            commandsMeta.setDisplayName(TextUtil.color("&e&lComandos"));
+            commandsMeta.setDisplayName(TextUtil.color("&e&l💻 Comandos Disponíveis"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color("&e/pets &7- Abre o menu principal"));
-            lore.add(TextUtil.color("&e/pets summon <nome> &7- Invoca um pet específico"));
-            lore.add(TextUtil.color("&e/pets list &7- Lista todos os seus pets"));
-            lore.add(TextUtil.color("&e/pets reload &7- Recarrega a configuração"));
-            lore.add(TextUtil.color("&e/pets help &7- Mostra ajuda"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&7📋 &fLista de comandos do M4Pets:"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l/pets"));
+            lore.add(TextUtil.color("&7  📂 &fAbre o menu principal"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l/pets summon &8<nome>"));
+            lore.add(TextUtil.color("&7  🎯 &fInvoca um pet específico"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l/pets list"));
+            lore.add(TextUtil.color("&7  📜 &fLista todos os seus pets"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l/pets reload &8(admin)"));
+            lore.add(TextUtil.color("&7  🔄 &fRecarrega a configuração"));
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
             
             commandsMeta.setLore(lore);
             commandsItem.setItemMeta(commandsMeta);
@@ -68,15 +87,27 @@ public class PetInfoGUI {
         ItemStack typesItem = new ItemStack(Material.SADDLE);
         ItemMeta typesMeta = typesItem.getItemMeta();
         if (typesMeta != null) {
-            typesMeta.setDisplayName(TextUtil.color("&6&lTipos de Pets"));
+            typesMeta.setDisplayName(TextUtil.color("&6&l🏷️ Tipos de Pets"));
             
             List<String> lore = new ArrayList<>();
-            lore.add(TextUtil.color("&6Montarias &7- Pets que você pode montar"));
-            lore.add(TextUtil.color("&c&lGuerreiros &7- Pets que lutam por você"));
-            lore.add(TextUtil.color("&e&lTrabalhadores &7- Pets que trabalham para você"));
-            lore.add(TextUtil.color("&7(Em desenvolvimento)"));
-            lore.add(TextUtil.color("&d&lDecorativos &7- Pets puramente estéticos"));
-            lore.add(TextUtil.color("&7(Em desenvolvimento)"));
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+            lore.add(TextUtil.color("&7🎯 &fCategorias disponíveis:"));
+            lore.add("");
+            lore.add(TextUtil.color("&6&l🐎 Montarias"));
+            lore.add(TextUtil.color("&7  🚀 &fPets que você pode montar"));
+            lore.add(TextUtil.color("&7  ⚡ &fAumentam sua velocidade"));
+            lore.add("");
+            lore.add(TextUtil.color("&c&l⚔️ Guerreiros"));
+            lore.add(TextUtil.color("&7  🛡️ &fPets que lutam por você"));
+            lore.add(TextUtil.color("&7  💪 &fProtegem e defendem"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l🔨 Trabalhadores"));
+            lore.add(TextUtil.color("&7  ⭐ &f(Em desenvolvimento)"));
+            lore.add("");
+            lore.add(TextUtil.color("&d&l🌸 Decorativos"));
+            lore.add(TextUtil.color("&7  ⭐ &f(Em desenvolvimento)"));
+            lore.add("");
+            lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
             
             typesMeta.setLore(lore);
             typesItem.setItemMeta(typesMeta);

@@ -36,7 +36,7 @@ public class PetStoreGUI {
         ConfigurationSection guiConfig = plugin.getConfigManager().getMainConfig().getConfigurationSection("gui.store");
         if (guiConfig == null) return;
         
-        String title = TextUtil.color(guiConfig.getString("title", "&9&lM4Pets &8| &eLoja de Pets"));
+        String title = TextUtil.color(guiConfig.getString("title", "&5&l✨ &9&lM4Pets &8&l| &e&l🛒 Loja de Pets"));
         mainStoreInventory = Bukkit.createInventory(null, 27, title);
         
         // Adicionar itens de categoria
@@ -103,7 +103,7 @@ public class PetStoreGUI {
             }
         }
         
-        // ADICIONAR ESTA LINHA: Criar o inventário de montarias explicitamente
+        // Garantir criação do inventário de montarias com sufixo correto
         createCategoryInventory("mounts");
     }
     
@@ -111,7 +111,16 @@ public class PetStoreGUI {
      * Cria um inventário para uma categoria específica
      */
     private void createCategoryInventory(String category) {
-        String title = TextUtil.color("&9&lM4Pets &8| &e" + category.substring(0, 1).toUpperCase() + category.substring(1));
+        String titleSuffix = "";
+        if (category.equals("warriors")) {
+            titleSuffix = "&c&l⚔ Guerreiros &c&l⚔";
+        } else if (category.equals("mounts")) {
+            titleSuffix = "&6&l🐎 Montarias &6&l🐎";
+        } else {
+            titleSuffix = "&e" + category.substring(0, 1).toUpperCase() + category.substring(1);
+        }
+        
+        String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| " + titleSuffix);
         Inventory inventory = Bukkit.createInventory(null, 54, title);
         
         // Adicionar pets dessa categoria
@@ -135,21 +144,24 @@ public class PetStoreGUI {
                 ItemStack item = new ItemStack(icon);
                 ItemMeta meta = item.getItemMeta();
                 if (meta != null) {
-                    meta.setDisplayName(TextUtil.color("&a&l" + petName));
+                    meta.setDisplayName(TextUtil.color("&a&l🐾 " + petName));
                     
                     List<String> lore = new ArrayList<>();
-                    lore.add(TextUtil.color("&7Preço: &e" + cost));
-                    lore.add(TextUtil.color("&7Vida base: &c" + baseHealth));
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                    lore.add(TextUtil.color("&7💰 &fPreço: &e&l$" + cost));
+                    lore.add(TextUtil.color("&7❤ &fVida base: &c" + (int)baseHealth));
                     
                     if (configCategory.equals("mount")) {
-                        lore.add(TextUtil.color("&7Velocidade base: &b" + baseSpeed));
+                        lore.add(TextUtil.color("&7⚡ &fVelocidade base: &b" + String.format("%.1f", baseSpeed)));
                     }
                     
                     lore.add("");
-                    lore.add(TextUtil.color("&7Habilidade especial (Nível 5):"));
-                    lore.add(TextUtil.color("&e" + petConfig.getString("level5-ability", "Nenhuma")));
+                    lore.add(TextUtil.color("&7🌟 &fHabilidade especial (Nível 5):"));
+                    String ability = petConfig.getString("level5-ability", "Nenhuma");
+                    lore.add(TextUtil.color("&e✨ " + ability));
                     lore.add("");
-                    lore.add(TextUtil.color("&aClique para comprar"));
+                    lore.add(TextUtil.color("&8▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+                    lore.add(TextUtil.color("&a&l💳 &6Clique para comprar!"));
                     
                     meta.setLore(lore);
                     item.setItemMeta(meta);
@@ -175,7 +187,13 @@ public class PetStoreGUI {
         ItemStack backItem = new ItemStack(Material.ARROW);
         ItemMeta backMeta = backItem.getItemMeta();
         if (backMeta != null) {
-            backMeta.setDisplayName(TextUtil.color("&c&lVoltar"));
+            backMeta.setDisplayName(TextUtil.color("&c&l◀ &fVoltar à Loja Principal"));
+            List<String> lore = new ArrayList<>();
+            lore.add(TextUtil.color("&7Retornar ao menu principal"));
+            lore.add(TextUtil.color("&7da loja de pets"));
+            lore.add("");
+            lore.add(TextUtil.color("&e&l👆 &6Clique para voltar"));
+            backMeta.setLore(lore);
             backItem.setItemMeta(backMeta);
         }
         inventory.setItem(49, backItem);
