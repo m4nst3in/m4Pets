@@ -5,6 +5,7 @@ import me.m4nst3in.m4plugins.database.dao.PetDAO;
 import me.m4nst3in.m4plugins.pets.abstractpets.AbstractPet;
 import me.m4nst3in.m4plugins.pets.abstractpets.MountPet;
 import me.m4nst3in.m4plugins.pets.mounts.*;
+import me.m4nst3in.m4plugins.pets.decoratives.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,7 +13,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -37,6 +37,7 @@ public class PetManager {
         
         // Agendar tarefas relacionadas aos pets (partículas, etc)
         scheduleParticleEffects();
+        scheduleDecorativeTasks();
     }
     
     /**
@@ -227,7 +228,17 @@ public class PetManager {
                 return new DonkeyPet(plugin, ownerId, name, variant);
             case MARE:
                 return new MarePet(plugin, ownerId, name, variant);
-            
+            // Pets decorativos
+            case CAT:
+                return new CatPet(plugin, ownerId, name, variant);
+            case PARROT:
+                return new ParrotPet(plugin, ownerId, name, variant);
+            case RABBIT:
+                return new RabbitPet(plugin, ownerId, name, variant);
+            case AXOLOTL:
+                return new AxolotlPet(plugin, ownerId, name, variant);
+            case WOLF:
+                return new WolfPet(plugin, ownerId, name, variant);
             // Pets Guerreiros
             case ZOMBIE:
                 return new me.m4nst3in.m4plugins.pets.warriors.ZombiePet(plugin, ownerId, name, variant);
@@ -459,6 +470,34 @@ public class PetManager {
     public boolean mountPet(Player player, AbstractPet pet) {
         if (pet instanceof MountPet) {
             return ((MountPet) pet).mount(player);
+        }
+        return false;
+    }
+    
+    /**
+     * Agenda o processamento de efeitos de proximidade para pets decorativos
+     */
+    private void scheduleDecorativeTasks() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (AbstractPet pet : activePets.values()) {
+                    if (pet instanceof DecorativePet) {
+                        ((DecorativePet) pet).applyProximityEffect();
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 20L); // a cada segundo
+    }
+
+    /**
+     * Alterna a IA de um pet decorativo
+     * @return novo estado da IA ou falso se não for decorativo
+     */
+    public boolean togglePetAI(AbstractPet pet) {
+        if (pet instanceof DecorativePet) {
+            ((DecorativePet) pet).toggleAI();
+            return ((DecorativePet) pet).isAIActive();
         }
         return false;
     }

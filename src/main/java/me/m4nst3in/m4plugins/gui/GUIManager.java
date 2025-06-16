@@ -83,10 +83,11 @@ public class GUIManager {
             } else if (slot == 14) { // Trabalhadores 🔨
                 player.sendMessage(plugin.formatMessage("&e&l✨ &fEsta categoria ainda está em desenvolvimento! &e&l✨"));
             } else if (slot == 16) { // Decorativos 🌸
-                player.sendMessage(plugin.formatMessage("&e&l✨ &fEsta categoria ainda está em desenvolvimento! &e&l✨"));
-            } else if (slot == 26) { // Voltar ◀
-                mainGUI.openMainMenu(player);
-            }
+                // Open decorative pets store
+                petStoreGUI.openCategory(player, "decorative");
+             } else if (slot == 26) { // Voltar ◀
+                 mainGUI.openMainMenu(player);
+             }
         }
         // Menu Categoria - Guerreiros ⚔️
         else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &c&l⚔ Guerreiros &c&l⚔"))) {
@@ -124,6 +125,20 @@ public class GUIManager {
                 petStoreGUI.openMainStore(player);
             }
         }
+        // Menu Categoria - Decorativos 🌸
+        else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &d&l🌸 Decorativos 🌸"))) {
+            event.setCancelled(true);
+            // Se for slot de pet e não filler/voltar
+            if (slot >= 10 && slot <= 44 && event.getCurrentItem() != null &&
+                !event.getCurrentItem().getType().name().endsWith("GLASS_PANE") && slot != 49) {
+                String petKey = petStoreGUI.getPetKeyForSlot("decorative", slot);
+                if (petKey != null) {
+                    petStoreGUI.processPetPurchase(player, "decorative", petKey);
+                }
+            } else if (slot == 49) { // Voltar ◀
+                petStoreGUI.openMainStore(player);
+            }
+        }
         // Menu Meus Pets 🐾
         else if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🐾 Meus Pets 🐾"))) {
             event.setCancelled(true);
@@ -141,15 +156,17 @@ public class GUIManager {
                 mainGUI.openMainMenu(player);
             }
         }
-        // Menu de Gerenciamento de Pet 🛠️
-        else if (title.startsWith(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l")) && 
-                 !title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🐾 Meus Pets 🐾"))) {
+        // Menu de Gerenciamento de Pet: detecta qualquer GUI com '🛠'
+        else if (title.contains("🛠")) {
             event.setCancelled(true);
-            
-            // Encontrar o pet sendo gerenciado
-            AbstractPet pet = findPetByName(player, title.substring(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l").length()));
-            if (pet != null) {
-                myPetsGUI.handlePetManagementAction(player, pet, slot);
+            // Extrair nome do pet entre dois símbolos 🛠
+            String[] parts = title.split("🛠");
+            if (parts.length >= 3) {
+                String petName = parts[1].trim();
+                AbstractPet pet = findPetByName(player, petName);
+                if (pet != null) {
+                    myPetsGUI.handlePetManagementAction(player, pet, slot);
+                }
             }
         }
         // Menu de Cosméticos ✨

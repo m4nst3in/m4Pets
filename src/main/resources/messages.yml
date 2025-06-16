@@ -19,7 +19,10 @@ messages:
     upgrade-success: "&aSeu pet &e%pet_name% &afoi melhorado para o nível &e%level%&a!"
     max-level-reached: "&cSeu pet já está no nível máximo!"
     cosmetic-purchased: "&aVocê comprou o cosmético &e%cosmetic_name% &apara seu pet &e%pet_name%&a!"
-    
+    decorative:
+      ai-on: "&aIA do pet decorativo &e%pet_name% &aativada!"
+      ai-off: "&cIA do pet decorativo &e%pet_name% &adesativada!"
+
   # Mensagens de ajuda do comando
   help:
     header: "&9&l=== &bM4Pets - Ajuda &9&l==="
@@ -28,3 +31,4 @@ messages:
     summon: "&e/pets summon <nome> &7- Invoca um pet específico"
     list: "&e/pets list &7- Lista todos os seus pets"
     help: "&e/pets help &7- Mostra esta mensagem de ajuda"
+    toggleai: "&e/pets toggleai <nome> &7- Alterna IA de pets decorativos"

@@ -2,6 +2,7 @@ package me.m4nst3in.m4plugins.commands;
 
 import me.m4nst3in.m4plugins.M4Pets;
 import me.m4nst3in.m4plugins.pets.abstractpets.AbstractPet;
+import me.m4nst3in.m4plugins.pets.decoratives.DecorativePet;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -71,6 +72,26 @@ public class PetCommand implements CommandExecutor, TabCompleter {
                 plugin.getPetManager().spawnPet(player, pet);
                 break;
                 
+            case "toggleai":
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(plugin.formatMessage("&cEste comando só pode ser usado por jogadores."));
+                    return true;
+                }
+                if (args.length < 2) {
+                    sender.sendMessage(plugin.formatMessage("&cUso correto: /pets toggleai <nome do pet>"));
+                    return true;
+                }
+                Player p = (Player) sender;
+                AbstractPet targetPet = plugin.getPetManager().getPlayerPetByName(p.getUniqueId(), args[1]);
+                if (!(targetPet instanceof DecorativePet)) {
+                    p.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.pet-not-found")));
+                    return true;
+                }
+                boolean aiState = plugin.getPetManager().togglePetAI(targetPet);
+                String msgKey = aiState ? "decorative.ai-on" : "decorative.ai-off";
+                p.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage(msgKey)).replace("%pet_name%", targetPet.getPetName()));
+                break;
+                
             default:
                 sendHelpMessage(player);
                 break;
@@ -92,6 +113,7 @@ public class PetCommand implements CommandExecutor, TabCompleter {
         
         player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("help.summon")));
         player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("help.list")));
+        player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("help.toggleai")));
         player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("help.help")));
     }
     
@@ -122,11 +144,12 @@ public class PetCommand implements CommandExecutor, TabCompleter {
             completions.add("help");
             completions.add("list");
             completions.add("summon");
+            completions.add("toggleai");
             
             if (sender.hasPermission("m4pets.admin")) {
                 completions.add("reload");
             }
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("summon") && sender instanceof Player) {
+        } else if (args.length == 2 && (args[0].equalsIgnoreCase("summon") || args[0].equalsIgnoreCase("toggleai")) && sender instanceof Player) {
             Player player = (Player) sender;
             Collection<AbstractPet> pets = plugin.getPetManager().getPlayerPets(player.getUniqueId());
             

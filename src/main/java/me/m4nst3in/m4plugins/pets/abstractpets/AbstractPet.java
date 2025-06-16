@@ -85,9 +85,9 @@ public abstract class AbstractPet {
             return false;
         }
         
-        // Verificar se já está invocado
+        // Verificar se já está invocado e remover o anterior para evitar duplicatas
         if (spawned && entity != null && !entity.isDead()) {
-            despawn();
+            despawn(); 
         }
         
         // Invocar entidade
@@ -97,17 +97,17 @@ public abstract class AbstractPet {
             spawned = true;
             lastSpawnTime = currentTime;
             
-            // Customizar entidade com nome personalizado incluindo vida
             customizeEntity();
+            updateEntityName(); // Adicionado para garantir que o nome da entidade seja atualizado após a customização
             
-            // Não mais cria hologramas separados
-            // Removido: if (plugin.isDecentHologramsEnabled()) {
-            //     createHologram();
+            // A lógica de holograma foi removida anteriormente conforme comentários no código.
+            // if (plugin.isDecentHologramsEnabled()) {
+            //     createHologram(); 
             // }
             
             player.sendMessage(plugin.formatMessage(plugin.getConfigManager().getMessage("general.pet-spawned")
                     .replace("%pet_name%", petName)));
-            return true;
+            return true; // CORREÇÃO: Retornar true em caso de sucesso.
         }
         
         return false;

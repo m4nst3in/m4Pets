@@ -21,11 +21,13 @@ public class PetStoreGUI {
     
     private final M4Pets plugin;
     private final Map<String, Inventory> categoryInventories;
+    private final Map<String, Map<Integer, String>> slotMappings; // category -> (slot -> petKey)
     private Inventory mainStoreInventory;
     
     public PetStoreGUI(M4Pets plugin) {
         this.plugin = plugin;
         this.categoryInventories = new HashMap<>();
+        this.slotMappings = new HashMap<>();
         createMainStoreInventory();
     }
     
@@ -116,13 +118,17 @@ public class PetStoreGUI {
             titleSuffix = "&c&l⚔ Guerreiros &c&l⚔";
         } else if (category.equals("mounts")) {
             titleSuffix = "&6&l🐎 Montarias &6&l🐎";
+        } else if (category.equals("decorative")) {
+            titleSuffix = "&d&l🌸 Decorativos 🌸";
         } else {
             titleSuffix = "&e" + category.substring(0, 1).toUpperCase() + category.substring(1);
         }
         
         String title = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| " + titleSuffix);
         Inventory inventory = Bukkit.createInventory(null, 54, title);
-        
+        // prepare slot mapping
+        Map<Integer, String> mapping = new HashMap<>();
+
         // Adicionar pets dessa categoria
         // MODIFICAR ESTA LINHA PARA LIDAR COM "mounts" DE FORMA ESPECIAL
         String configCategory = category.equals("mounts") ? "mount" : category;
@@ -130,7 +136,7 @@ public class PetStoreGUI {
         
         if (petsConfig != null) {
             int slot = 10;
-            
+
             for (String petKey : petsConfig.getKeys(false)) {
                 ConfigurationSection petConfig = petsConfig.getConfigurationSection(petKey);
                 if (petConfig == null) continue;
@@ -168,6 +174,8 @@ public class PetStoreGUI {
                 }
                 
                 inventory.setItem(slot, item);
+                // track slot mapping
+                mapping.put(slot, petKey);
                 
                 // Avançar para o próximo slot
                 slot++;
@@ -178,6 +186,7 @@ public class PetStoreGUI {
                 // Limitar a 28 pets por página
                 if (slot >= 45) break;
             }
+            slotMappings.put(category, mapping);
         } else {
             // ADICIONAR MENSAGEM DE DEBUG
             plugin.getLogger().warning("Não foi encontrada configuração para a categoria: pets." + configCategory);
@@ -292,5 +301,13 @@ public class PetStoreGUI {
         } catch (IllegalArgumentException e) {
             player.sendMessage(plugin.formatMessage("&cEste tipo de pet não existe."));
         }
+    }
+    
+    /**
+     * Retorna a chave do pet para um slot e categoria
+     */
+    public String getPetKeyForSlot(String category, int slot) {
+        Map<Integer, String> mapping = slotMappings.get(category);
+        return mapping != null ? mapping.get(slot) : null;
     }
 }

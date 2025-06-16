@@ -146,9 +146,9 @@ gui:
           - "&7Adicione um toque de charme e estilo" # Updated lore
           - "&7com pets de beleza singular!"        # Updated lore
           - ""
-          - "&e&l✨ EM BREVE! ✨" # Updated "coming soon"
+          - "&e&l✨ Descubra benefícios únicos! ✨" # Updated to reflect features
         slot: 16
-        implemented: false
+        implemented: true
 
 # Configuração dos pets
 pets:
@@ -256,6 +256,63 @@ pets:
       variants:
         - "default"
         - "pillager"
+        
+  # Configurações específicas para pets decorativos
+  decorative:
+    cat:
+      name: "Gato"
+      icon: "CAT_SPAWN_EGG"
+      cost: 1200
+      base-health: 10
+      proximity-radius: 5.0
+      variants:
+        - "tabby"
+        - "siamese"
+        - "black"
+        - "red"
+        - "white"
+    parrot:
+      name: "Papagaio"
+      icon: "PARROT_SPAWN_EGG"
+      cost: 1500
+      base-health: 8
+      proximity-radius: 5.0
+      variants:
+        - "red"
+        - "blue"
+        - "green"
+        - "cyan"
+        - "gray"
+    rabbit:
+      name: "Coelho"
+      icon: "RABBIT_SPAWN_EGG"
+      cost: 1000
+      base-health: 6
+      proximity-radius: 5.0
+      variants:
+        - "brown"
+        - "white"
+        - "black"
+        - "splotched"
+    axolotl:
+      name: "Axolote"
+      icon: "AXOLOTL_SPAWN_EGG"
+      cost: 1800
+      base-health: 12
+      proximity-radius: 5.0
+      variants:
+        - "wild"
+        - "blue"
+        - "gold"
+        - "lucy"
+    wolf:
+      name: "Lobo"
+      icon: "WOLF_SPAWN_EGG"
+      cost: 1300
+      base-health: 14
+      proximity-radius: 5.0
+      variants:
+        - "default"
 
 # Configurações dos cosméticos
 cosmetics:
