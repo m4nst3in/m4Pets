@@ -59,8 +59,8 @@ public class GUIManager {
         Player player = (Player) event.getWhoClicked();
         String title = event.getView().getTitle();
         int slot = event.getRawSlot();
-        
-        // Menu Principal  ✨ M4Pets ✨
+
+        // Menu Principal ✨ M4Pets ✨
         if (title.equals(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &6&l⭐ Menu Principal ⭐"))) {
             event.setCancelled(true);
             
@@ -156,17 +156,41 @@ public class GUIManager {
                 mainGUI.openMainMenu(player);
             }
         }
-        // Menu de Gerenciamento de Pet: detecta qualquer GUI com '🛠'
-        else if (title.contains("🛠")) {
+        // Menu de Gerenciamento de Pet:
+        // Título esperado: "&5&l✨ &9&lM4Pets &8&l| &a&l🛠 " + pet.getPetName() + " &a&l🛠"
+        else if (title.startsWith(TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🛠 "))) {
             event.setCancelled(true);
-            // Extrair nome do pet entre dois símbolos 🛠
-            String[] parts = title.split("🛠");
-            if (parts.length >= 3) {
-                String petName = parts[1].trim();
-                AbstractPet pet = findPetByName(player, petName);
-                if (pet != null) {
-                    myPetsGUI.handlePetManagementAction(player, pet, slot);
+
+            String prefix = TextUtil.color("&5&l✨ &9&lM4Pets &8&l| &a&l🛠 ");
+            String suffix = TextUtil.color(" &a&l🛠"); // O sufixo como definido em MyPetsGUI
+
+            if (title.endsWith(suffix)) {
+                int petNameStartIndex = prefix.length();
+                int petNameEndIndex = title.length() - suffix.length();
+
+                if (petNameStartIndex < petNameEndIndex) {
+                    String petName = title.substring(petNameStartIndex, petNameEndIndex);
+                    
+                    // Assumindo que findPetByName é um método em GUIManager que chama
+                    // plugin.getPetManager().getPlayerPetByName(player.getUniqueId(), petName);
+                    AbstractPet pet = findPetByName(player, petName); 
+                                        
+                    if (pet != null) {
+                        myPetsGUI.handlePetManagementAction(player, pet, slot);
+                    } else {
+                        plugin.getLogger().warning("[M4Pets] Pet not found from GUI title: '" + title + "'. Extracted petName: '" + petName + "'");
+                        player.sendMessage(TextUtil.color("&cErro ao processar ação: Pet não encontrado."));
+                    }
+                } else {
+                    plugin.getLogger().warning("[M4Pets] Error extracting petName from GUI title (indices wrong): " + title);
+                    player.sendMessage(TextUtil.color("&cErro ao processar ação no menu do pet."));
                 }
+            } else {
+                // Este caso pode ocorrer se o nome do pet contiver '🛠' ou se o título for malformado.
+                // A lógica original com title.contains("🛠") e split era mais propensa a erros aqui.
+                // Se o título começa com o prefixo mas não termina com o sufixo esperado, algo está errado.
+                plugin.getLogger().warning("[M4Pets] Error extracting petName from GUI title (suffix mismatch or unexpected format): " + title);
+                player.sendMessage(TextUtil.color("&cErro ao identificar o menu do pet."));
             }
         }
         // Menu de Cosméticos ✨

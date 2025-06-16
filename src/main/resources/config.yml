@@ -260,7 +260,7 @@ pets:
   # Configurações específicas para pets decorativos
   decorative:
     cat:
-      name: "Gato"
+      name: "&fGato"
       icon: "CAT_SPAWN_EGG"
       cost: 1200
       base-health: 10
@@ -272,7 +272,7 @@ pets:
         - "red"
         - "white"
     parrot:
-      name: "Papagaio"
+      name: "&fPapagaio"
       icon: "PARROT_SPAWN_EGG"
       cost: 1500
       base-health: 8
@@ -284,7 +284,7 @@ pets:
         - "cyan"
         - "gray"
     rabbit:
-      name: "Coelho"
+      name: "&fCoelho"
       icon: "RABBIT_SPAWN_EGG"
       cost: 1000
       base-health: 6
@@ -295,7 +295,7 @@ pets:
         - "black"
         - "splotched"
     axolotl:
-      name: "Axolote"
+      name: "&fAxolote"
       icon: "AXOLOTL_SPAWN_EGG"
       cost: 1800
       base-health: 12
@@ -306,13 +306,20 @@ pets:
         - "gold"
         - "lucy"
     wolf:
-      name: "Lobo"
-      icon: "WOLF_SPAWN_EGG"
-      cost: 1300
-      base-health: 14
-      proximity-radius: 5.0
-      variants:
-        - "default"
+      name: "&fLobo"
+      material: "BONE"
+      cost: 1200.0
+      lore:
+        - "&7Um companheiro leal e nobre."
+        - "&7Concede Força I ao seu dono"
+        - "&7quando estiver próximo."
+        - ""
+        - "&eNível Máximo: &65"
+        - "&aCusto: &6%cost%"
+      base-health: 25.0
+      health-increase-per-level: 6.0
+      level5-ability: "&6Força II constante ao dono."
+      proximity-radius: 5.0 # Raio para o efeito de Força
 
 # Configurações dos cosméticos
 cosmetics:

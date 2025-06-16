@@ -10,7 +10,7 @@ public enum PetType {
     
     
     // Guerreiros (em desenvolvimento)
-    WOLF("warriors"),
+    WOLF("decorative"),
     
     // Novos pets montáveis
     MARE("mount"),
@@ -24,7 +24,7 @@ public enum PetType {
     BEE("workers"),
     ALLAY("workers"),
     
-    // Decorativos (em desenvolvimento)
+    // Decorativo
     CAT("decorative"),
     PARROT("decorative"),
     RABBIT("decorative"),

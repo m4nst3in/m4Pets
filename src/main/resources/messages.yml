@@ -5,19 +5,23 @@
 messages:
   # Mensagens gerais
   general:
+    prefix: "&5&l✨ &9&lM4Pets &8&l|&r " # Updated prefix
     no-permission: "&cVocê não tem permissão para usar este comando."
-    reload-config: "&aConfiguração recarregada com sucesso!"
-    not-enough-money: "&cVocê não tem dinheiro suficiente! Necessário: &e%price%"
-    purchase-successful: "&aVocê comprou um &e%pet_name% &apor &e%price%&a!"
-    pet-spawned: "&aSeu pet &e%pet_name% &afoi invocado!"
-    pet-despawned: "&eSeu pet foi removido do mundo."
-    pet-cooldown: "&cAguarde %time% segundos para invocar seu pet novamente."
-    pet-renamed: "&aSeu pet agora se chama &e%pet_name%&a!"
-    pet-not-found: "&cVocê não possui este pet!"
-    pet-resurrected: "&aSeu pet &e%pet_name% &afoi ressuscitado por &e%price%&a!"
-    pet-dead: "&cSeu pet está morto! Ressuscite-o primeiro."
-    upgrade-success: "&aSeu pet &e%pet_name% &afoi melhorado para o nível &e%level%&a!"
-    max-level-reached: "&cSeu pet já está no nível máximo!"
+    player-not-found: "&cJogador não encontrado."
+    pet-not-found: "&cPet com o nome '%name%' não encontrado."
+    pet-dead: "&cSeu pet está morto e não pode ser invocado. Use /pets resurrect."
+    pet-cooldown: "&cVocê deve esperar %time% segundos para invocar um pet novamente."
+    pet-spawned: "&aSeu pet &e%pet_name%&a foi invocado!"
+    pet-despawned: "&aSeu pet &e%pet_name%&a foi guardado."
+    max-level-reached: "&eSeu pet já atingiu o nível máximo!"
+    not-enough-money: "&cVocê não tem dinheiro suficiente. Custo: &e%price%&c."
+    upgrade-success: "&aSeu pet &e%pet_name%&a foi melhorado para o nível &6%level%&a!"
+    pet-resurrected: "&aSeu pet &e%pet_name%&a foi ressuscitado por &6%price%&a!"
+    rename-success: "&aPet renomeado para &e%new_name%&a com sucesso!"
+    pet-already-spawned: "&cEste pet já está invocado."
+    cannot-spawn-here: "&cVocê não pode invocar pets nesta área."
+    invalid-pet-type: "&cTipo de pet inválido."
+    pet-limit-reached: "&cVocê atingiu o limite de pets que pode ter."
     cosmetic-purchased: "&aVocê comprou o cosmético &e%cosmetic_name% &apara seu pet &e%pet_name%&a!"
     decorative:
       ai-on: "&aIA do pet decorativo &e%pet_name% &aativada!"
@@ -32,3 +36,35 @@ messages:
     list: "&e/pets list &7- Lista todos os seus pets"
     help: "&e/pets help &7- Mostra esta mensagem de ajuda"
     toggleai: "&e/pets toggleai <nome> &7- Alterna IA de pets decorativos"
+
+commands:
+  main:
+    description: "&eComando principal do M4Pets."
+    usage: "&e/pets <subcomando> [argumentos]"
+    reloaded: "&aConfigurações do M4Pets recarregadas com sucesso!"
+    help-header: "&5&l✨ &9&lM4Pets &8&l| &f&lAjuda &5&l✨"
+    help-format: "&e%usage% &7- %description%"
+  store:
+    description: "&eAbre a loja de pets."
+    usage: "&e/pets store"
+  mypets:
+    description: "&eGerencia seus pets."
+    usage: "&e/pets mypets"
+  spawn:
+    description: "&eInvoca um pet."
+    usage: "&e/pets spawn <nome_do_pet>"
+  despawn:
+    description: "&eGuarda seu pet invocado."
+    usage: "&e/pets despawn"
+  rename:
+    description: "&eRenomeia um pet."
+    usage: "&e/pets rename <nome_antigo> <novo_nome>"
+  resurrect:
+    description: "&eRessuscita um pet morto."
+    usage: "&e/pets resurrect <nome_do_pet>"
+  upgrade:
+    description: "&eMelhora o nível de um pet."
+    usage: "&e/pets upgrade <nome_do_pet>"
+  toggleai:
+    description: "&eAlterna a IA de pets decorativos."
+    usage: "&e/pets toggleai <nome_do_pet>"
