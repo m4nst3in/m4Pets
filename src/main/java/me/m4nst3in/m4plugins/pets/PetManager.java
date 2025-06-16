@@ -288,6 +288,23 @@ public class PetManager {
     }
     
     /**
+     * Salva todos os pets de forma síncrona (sem agendamento) para uso em onDisable
+     */
+    public void saveAllPetDataSync() {
+        plugin.getLogger().info("Salvando dados de pets no banco de dados (sync)...");
+        for (Map<UUID, AbstractPet> playerPetsMap : playerPets.values()) {
+            for (AbstractPet pet : playerPetsMap.values()) {
+                try {
+                    petDAO.savePet(pet.serialize());
+                } catch (Exception e) {
+                    plugin.getLogger().log(Level.SEVERE, "Erro ao salvar pet: " + pet.getPetId(), e);
+                }
+            }
+        }
+        plugin.getLogger().info("Dados de pets salvos com sucesso (sync)!");
+    }
+    
+    /**
      * Remove um pet do sistema e do banco de dados
      */
     public void removePet(Player player, AbstractPet pet) {

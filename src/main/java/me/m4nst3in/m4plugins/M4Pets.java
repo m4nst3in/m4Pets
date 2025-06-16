@@ -94,7 +94,7 @@ public class M4Pets extends JavaPlugin {
         // Salvar dados antes de desligar
         if (petManager != null) {
             petManager.despawnAllPets();
-            petManager.saveAllPetData();
+            petManager.saveAllPetDataSync(); // Use synchronous save to avoid scheduling tasks during disable
         }
         
         // Remover hologramas
